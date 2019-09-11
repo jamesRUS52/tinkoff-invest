@@ -107,5 +107,12 @@ foreach ($operations as $operation)
   print $operation->getId ().' '.$operation->getFigi (). ' '.$operation->getPrice ().' '.$operation->getOperationType().' '.$operation->getDate()->format('d.m.Y H:i')."\n";
 
 ```
+## Donation
+Please support my project
+
+[![](https://img.shields.io/badge/Donate-PayPal-green)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4WEWSZPBUBSVJ&source=url)
+[![](https://img.shields.io/badge/Donate-Yandex-green)](https://money.yandex.ru/quickpay/shop-widget?writer=seller&targets=Project%20support&targets-hint=&default-sum=100&button-text=14&payment-type-choice=on&mobile-payment-type-choice=on&hint=&successURL=&quickpay=shop&account=41001102505770)
+[![](https://img.shields.io/badge/Donate-WebMoney-green)](https://funding.webmoney.ru/widgets/horizontal/f892576d-1ce5-4046-abd7-7c947a81b398?hs=1&bt=0&sum=100)
+
 ## Licence 
 MIT
