@@ -1,0 +1,21 @@
+{
+    "name": "james.rus52/tinkoffinvest",
+    "description": "PHP client Tinkoff Invest",
+    "keywords": ["php", "rest", "client", "tinkoff", "invest"],
+    "license" : "MIT",
+    "authors" : [
+        {
+            "name": "Anton V. Davydov",
+            "email": "james.rus52@gmail.com",
+            "homepage": "http://www.jamesr52.ru"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "jamesRUS52\\TinkoffInvest\\" : "src"
+        }
+    },
+    "require" : {
+	"php": "^5.6 || ^7.0"
+    }
+}
