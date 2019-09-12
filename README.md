@@ -1,4 +1,4 @@
-# PHP client for Tinkoff invest (PHP клиент для Тинькофф инвестиций)
+# PHP client for Tinkoff invest API (PHP клиент для API Тинькофф инвестиции)
 
 ## How to install
 ```
