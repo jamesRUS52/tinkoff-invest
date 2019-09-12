@@ -78,7 +78,7 @@ or by figi
 ```php
 $instr = $client->getInstrumentByFigi("BBG000BR37X2");
 ```
-Get prtfolio
+Get portfolio
 ```php
 $port = $client->getPortfolio();
 ```
