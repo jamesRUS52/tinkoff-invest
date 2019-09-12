@@ -91,7 +91,7 @@ print $port->getinstrumentLots("PGR");
 ```
 Send order
 ```php
-$order = $client->sendOrder("BBG000BVPV84", 1, \jamesRUS52\TinkoffInvest\TIOperationEnum::BUY, 1.2);
+$order = $client->sendOrder("BBG000BVPV84", 1, TIOperationEnum::BUY, 1.2);
 print $order->getORderId();
 ```
 Cancel order
