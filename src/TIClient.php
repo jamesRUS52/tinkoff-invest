@@ -413,7 +413,7 @@ class TIClient {
      * @param array $req_params
      * @param string $req_body
      * @return array json array from api
-     * @throws Exception
+     * @throws TIException
      */
     private function sendRequest($action, $method, $req_params=[], $req_body=null)
     {
@@ -446,7 +446,13 @@ class TIClient {
         //print "<BR>".$action."<BR>";
         //var_dump($result);
         if ($res !== 200)
-            throw new Exception ($result->status.' '.$result->payload->message, $res);
+        {
+            if ($res == 401)
+                $error_message = "Authorization error";
+            else
+                $error_message = (isset($result->status) && isset($result->payload)) ? $result->status.' '.$result->payload->message : "Unknown error";
+            throw new TIException ($error_message, $res);
+        }
         
         return $result;
     }
