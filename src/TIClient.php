@@ -218,11 +218,11 @@ class TIClient {
         $response = $this->sendRequest("/market/search/by-ticker","GET",["ticker"=>$ticker]);
         
         $currency = TICurrencyEnum::getCurrency($response->payload->instruments[0]->currency);
-
+        $isin = (isset($response->payload->instruments[0]->isin)) ? $response->payload->instruments[0]->isin : null;
         $instrument = new TIInstrument(
                 $response->payload->instruments[0]->figi,
                 $response->payload->instruments[0]->ticker,
-                $response->payload->instruments[0]->isin,
+                $isin,
                 $response->payload->instruments[0]->minPriceIncrement,
                 $response->payload->instruments[0]->lot,
                 $currency
@@ -612,7 +612,6 @@ class TIClient {
         $this->response_start_time = time();
         while (true)
         {
-            print "<BR>".$this->response_now."<BR>";
             try
             {
                 $response = $this->wsClient->receive();
@@ -646,7 +645,7 @@ class TIClient {
             call_user_func($callback,$object);
 
             $this->response_now++;
-            if ($this->startGetting === false || $this->response_now >= $max_response || time()>$this->response_start_time+$max_time_sec)
+            if ($this->startGetting === false || ($max_response !== null && $this->response_now >= $max_response) || ($max_time_sec !== null && time()>$this->response_start_time+$max_time_sec))
                 break;
         }
     }

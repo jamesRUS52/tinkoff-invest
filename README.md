@@ -9,7 +9,7 @@ add to your compose.json
 ```json
 {
     "require": {
-        "james.rus52/tinkoffinvest": "^0.1.0"
+        "james.rus52/tinkoffinvest": "^0.*"
     }
 }
 ```
@@ -29,6 +29,11 @@ use \jamesRUS52\TinkoffInvest\TIInstrument;
 use \jamesRUS52\TinkoffInvest\TIPortfolio;
 use \jamesRUS52\TinkoffInvest\TIOperationEnum;
 use \jamesRUS52\TinkoffInvest\TIIntervalEnum;
+use \jamesRUS52\TinkoffInvest\TICandleIntervalEnum;
+use \jamesRUS52\TinkoffInvest\TICandle;
+use \jamesRUS52\TinkoffInvest\TIOrderBook;
+use \jamesRUS52\TinkoffInvest\TIInstrumentInfo;
+
 ```
 create token to use tinkoff invest on [Tinkoff invest setting page](https://www.tinkoff.ru/invest/settings/)
 
@@ -108,6 +113,60 @@ foreach ($operations as $operation)
   print $operation->getId ().' '.$operation->getFigi (). ' '.$operation->getPrice ().' '.$operation->getOperationType().' '.$operation->getDate()->format('d.m.Y H:i')."\n";
 
 ```
+Getting instrument status
+```php
+$status = $client->getInstrumentInfo($sber->getFigi());
+print 'Instrument status: '. $status->getTrade_status()."\n";
+```
+
+Get Candles and Order books
+```php
+if ($status->getTrade_status()=="normal_trading")
+{
+        $candle = $client->getCandle($sber->getFigi(), TICandleIntervalEnum::DAY);
+        print 'Low: '.$candle->getLow(). ' High: '.$candle->getHigh().' Open: '.$candle->getOpen().' Close: '.$candle->getClose().' Volume: '.$candle->getVolume()."\n";
+
+        $orderbook = $client->getOrderBook($sber->getFigi(),2);
+        print 'Price to buy: '.$orderbook->getBestPriceToBuy().' Available lots: '.$orderbook->getBestPriceToBuyLotCount().' Price to Sell: '.$orderbook->getBestPriceToSell().' Available lots: '.$orderbook->getBestPriceToSellLotCount()."\n";
+}
+```
+
+You can also to subscribe on changes order books, candles or instrument info:
+First of all, make a callback function to manage events:
+```php
+function action($obj)
+{
+        print "action\n";
+        if ($obj instanceof TICandle)
+            print 'Time: '.$obj->getTime ()->format('d.m.Y H:i:s').' Volume: '.$obj->getVolume ()."\n";
+        if ($obj instanceof TIOrderBook)
+            print 'Price to Buy: '.$obj->getBestPriceToBuy().' Price to Sell: '.$obj->getBestPriceToSell()."\n";
+}
+```
+Then subscribe to events
+```php
+$client->subscribeGettingCandle($sber->getFigi(), TICandleIntervalEnum::MIN1);
+$client->subscribeGettingOrderBook($sber->getFigi(), 2);
+```
+and finaly start listening new events 
+```php
+$client->startGetting("action",20,60);
+```
+in this example we awaiting max 20 respnse and max for 60 seconds
+if you want no limits, you should make
+```php
+$client->startGetting("action");
+$client->startGetting("action",null,600);
+$client->startGetting("action",1000,null);
+```
+to stop listening do
+```php
+$client->stopGetting();
+```
+
+###CAUTION
+If you use subscriptions you should check figi on response, because you getting all subscribed instruments in one queue
+
 ## Donation
 Please support my project
 
