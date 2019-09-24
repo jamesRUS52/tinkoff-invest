@@ -8,6 +8,8 @@
 
 namespace jamesRUS52\TinkoffInvest;
 
+use WebSocket\Client;
+
 /**
  * Description of TIClient
  *
@@ -17,7 +19,14 @@ class TIClient {
     //put your code here
     private $token;
     private $url;
-    
+    /**
+     *
+     * @var WebSocket\Client 
+     */
+    private $wsClient;
+    private $startGetting = false;
+    private $response_now=0;
+    private $response_start_time;
     /**
      * 
      * @param string $token token from tinkoff.ru for specific site
@@ -26,6 +35,7 @@ class TIClient {
     function __construct($token,$site) {
         $this->token = $token;
         $this->url = $site;
+        $this->wsConnect();
     }
     
     
@@ -455,5 +465,194 @@ class TIClient {
         }
         
         return $result;
+    }
+    
+    private function wsConnect()
+    {
+        try
+        {
+            $this->wsClient = new Client("wss://api-invest.tinkoff.ru/openapi/md/v1/md-openapi/ws",["timeout"=>60, "headers"=>["authorization" => "Bearer {$this->token}"]]);
+        }
+        catch (\Exception $e)
+        {
+            throw new \jamesRUS52\TinkoffInvest\TIException("Can't connect to stream API. ".$e->getCode().' '.$e->getMessage());
+        }
+    }
+
+
+    private function candleSubscribtion($figi,$interval,$action="subscribe")
+    {
+        $request = '{
+                        "event": "candle:'.$action.'",
+                        "figi": "'.$figi.'",
+                        "interval": "'.$interval.'"
+                    }';
+        if (!$this->wsClient->isConnected())
+            $this->wsConnect ();
+        $this->wsClient->send($request);
+    }
+
+    /**
+     * Получить свечу
+     * @param string $figi
+     * @param \jamesRUS52\TinkoffInvest\TICandleIntervalEnum $interval
+     * @return \jamesRUS52\TinkoffInvest\TICandle
+     */
+    public function getCandle($figi,$interval)
+    {
+        $this->candleSubscribtion($figi, $interval);
+        $response = $this->wsClient->receive();
+        $this->candleSubscribtion($figi, $interval, "unsubscribe");
+        $json = json_decode($response);
+        $candle = new TICandle($json->payload->o,$json->payload->c,$json->payload->h,$json->payload->l,$json->payload->v,new \DateTime($json->payload->time), TICandleIntervalEnum::getInterval($json->payload->interval),$json->payload->figi);
+        return $candle;
+    }
+    
+    private function orderbookSubscribtion($figi,$depth,$action="subscribe")
+    {
+        $request = '{
+                        "event": "orderbook:'.$action.'",
+                        "figi": "'.$figi.'",
+                        "depth": '.$depth.'
+                    }';
+        if (!$this->wsClient->isConnected())
+            $this->wsConnect ();
+        $this->wsClient->send($request);
+    }
+
+    /**
+     * Получить стакан
+     * @param string $figi
+     * @param int $depth
+     * @return \jamesRUS52\TinkoffInvest\TIOrderBook
+     */
+    public function getOrderBook($figi,$depth=1)
+    {
+        if ($depth < 1)
+            $depth =1;
+        if ($depth >20)
+            $depth = 20;
+        $this->orderbookSubscribtion($figi, $depth);
+        $response = $this->wsClient->receive();
+        
+        $this->orderbookSubscribtion($figi, $depth, "unsubscribe");
+        $json = json_decode($response);
+        $orderbook = new TIOrderBook($json->payload->depth,$json->payload->bids,$json->payload->asks,$json->payload->figi);
+        return $orderbook;
+    }
+    
+    private function instrumentInfoSubscribtion($figi,$action="subscribe")
+    {
+        $request = '{
+                        "event": "instrument_info:'.$action.'",
+                        "figi": "'.$figi.'"
+                    }';
+        if (!$this->wsClient->isConnected())
+            $this->wsConnect ();
+        $this->wsClient->send($request);
+    }
+
+    /**
+     * Get Instrument info
+     * @param string $figi
+     * @return \jamesRUS52\TinkoffInvest\TIInstrumentInfo
+     */
+    public function getInstrumentInfo($figi)
+    {
+        $this->instrumentInfoSubscribtion($figi);
+        $response = $this->wsClient->receive();
+        $this->instrumentInfoSubscribtion($figi, "unsubscribe");
+        $json = json_decode($response);
+        $instrument = new TIInstrumentInfo($json->payload->trade_status,$json->payload->min_price_increment,$json->payload->lot,$json->payload->figi);
+        if (isset($json->payload->accrued_interest))
+            $instrument->setAccrued_interest($json->payload->accrued_interest);
+        if (isset($json->payload->limit_up))
+            $instrument->setLimit_up($json->payload->limit_up);
+        if (isset($json->payload->limit_down))
+            $instrument->setLimit_down ($json->payload->limit_down);
+        return $instrument;
+    }
+    
+    
+    public function subscribeGettingCandle($figi, $interval)
+    {
+        $this->candleSubscribtion($figi, $interval);
+    }
+    
+    public function subscribeGettingOrderBook($figi, $depth)
+    {
+        $this->orderbookSubscribtion($figi, $depth);
+    }
+    
+    public function subscribeGettingInstrumentInfo($figi)
+    {
+        $this->instrumentInfoSubscribtion($figi);
+    }
+    
+    public function unsubscribeGettingCandle($figi, $interval)
+    {
+        $this->candleSubscribtion($figi, $interval, "unsubscribe");
+    }
+    
+    public function unsubscribeGettingOrderBook($figi, $depth)
+    {
+        $this->orderbookSubscribtion($figi, $depth, "unsubscribe");
+    }
+    
+    public function unsubscribeGettingInstrumentInfo($figi)
+    {
+        $this->instrumentInfoSubscribtion($figi, "unsubscribe");
+    }
+
+
+    public function startGetting($callback,$max_response=10,$max_time_sec=60)
+    {
+        $this->startGetting = true;
+        $this->response_now = 0;
+        $this->response_start_time = time();
+        while (true)
+        {
+            print "<BR>".$this->response_now."<BR>";
+            try
+            {
+                $response = $this->wsClient->receive();
+                $json = json_decode($response);
+                if (!isset($json->event) || $json === null)
+                    continue;
+                switch ($json->event)
+                {
+                    case "candle" :
+                        $object = new TICandle($json->payload->o,$json->payload->c,$json->payload->h,$json->payload->l,$json->payload->v,new \DateTime($json->payload->time), TICandleIntervalEnum::getInterval($json->payload->interval),$json->payload->figi);
+                        break;
+                    case "orderbook" :
+                        $object = new TIOrderBook($json->payload->depth,$json->payload->bids,$json->payload->asks,$json->payload->figi);
+                        break;
+                    case "instrument_info" :
+                        $object = new TIInstrumentInfo($json->payload->trade_status,$json->payload->min_price_increment,$json->payload->lot,$json->payload->figi);
+                        if (isset($json->payload->accrued_interest))
+                            $object->setAccrued_interest($json->payload->accrued_interest);
+                        if (isset($json->payload->limit_up))
+                            $object->setLimit_up($json->payload->limit_up);
+                        if (isset($json->payload->limit_down))
+                            $object->setLimit_down ($json->payload->limit_down);
+                        break;
+                }
+            }
+            catch (\Exception $e)
+            {
+                ; // Empty response ???
+                $this->wsConnect();
+            }
+            call_user_func($callback,$object);
+
+            $this->response_now++;
+            if ($this->startGetting === false || $this->response_now >= $max_response || time()>$this->response_start_time+$max_time_sec)
+                break;
+        }
+    }
+    
+    public function stopGetting()
+    {
+        $this->startGetting = false;
     }
 }
