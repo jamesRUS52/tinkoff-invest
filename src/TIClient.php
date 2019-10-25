@@ -612,35 +612,27 @@ class TIClient {
         $this->response_start_time = time();
         while (true)
         {
-            try
+            $response = $this->wsClient->receive();
+            $json = json_decode($response);
+            if (!isset($json->event) || $json === null)
+                continue;
+            switch ($json->event)
             {
-                $response = $this->wsClient->receive();
-                $json = json_decode($response);
-                if (!isset($json->event) || $json === null)
-                    continue;
-                switch ($json->event)
-                {
-                    case "candle" :
-                        $object = new TICandle($json->payload->o,$json->payload->c,$json->payload->h,$json->payload->l,$json->payload->v,new \DateTime($json->payload->time), TICandleIntervalEnum::getInterval($json->payload->interval),$json->payload->figi);
-                        break;
-                    case "orderbook" :
-                        $object = new TIOrderBook($json->payload->depth,$json->payload->bids,$json->payload->asks,$json->payload->figi);
-                        break;
-                    case "instrument_info" :
-                        $object = new TIInstrumentInfo($json->payload->trade_status,$json->payload->min_price_increment,$json->payload->lot,$json->payload->figi);
-                        if (isset($json->payload->accrued_interest))
-                            $object->setAccrued_interest($json->payload->accrued_interest);
-                        if (isset($json->payload->limit_up))
-                            $object->setLimit_up($json->payload->limit_up);
-                        if (isset($json->payload->limit_down))
-                            $object->setLimit_down ($json->payload->limit_down);
-                        break;
-                }
-            }
-            catch (\Exception $e)
-            {
-                ; // Empty response ???
-                $this->wsConnect();
+                case "candle" :
+                    $object = new TICandle($json->payload->o,$json->payload->c,$json->payload->h,$json->payload->l,$json->payload->v,new \DateTime($json->payload->time), TICandleIntervalEnum::getInterval($json->payload->interval),$json->payload->figi);
+                    break;
+                case "orderbook" :
+                    $object = new TIOrderBook($json->payload->depth,$json->payload->bids,$json->payload->asks,$json->payload->figi);
+                    break;
+                case "instrument_info" :
+                    $object = new TIInstrumentInfo($json->payload->trade_status,$json->payload->min_price_increment,$json->payload->lot,$json->payload->figi);
+                    if (isset($json->payload->accrued_interest))
+                        $object->setAccrued_interest($json->payload->accrued_interest);
+                    if (isset($json->payload->limit_up))
+                        $object->setLimit_up($json->payload->limit_up);
+                    if (isset($json->payload->limit_down))
+                        $object->setLimit_down ($json->payload->limit_down);
+                    break;
             }
             call_user_func($callback,$object);
 

@@ -17,6 +17,6 @@
     },
     "require" : {
 	"php": "^5.6 || ^7.0",
-        "textalk/websocket": "^1.2"
+        "james.rus52/websocket": "^1.3"
     }
 }
