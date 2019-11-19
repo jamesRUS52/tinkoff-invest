@@ -61,4 +61,21 @@ class TIPortfolio {
         return false;
     }
     
+    /**
+     * Get all currencies in portfolio
+     * @return array of \TIPortfolioCurrency
+     */
+    public function getAllCurrencies()
+    {
+        return $this->currencies;
+    }
+    
+    /**
+     * Get all instruments in portfolio
+     * @return array of \TIPortfolioInstrument
+     */
+    public function getAllinstruments()
+    {
+        return $this->instruments;
+    }
 }
