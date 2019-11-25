@@ -140,7 +140,8 @@ class TIClient {
                         $instrument->isin,
                         $instrument->minPriceIncrement,
                         $instrument->lot,
-                        $currency
+                        $currency,
+                        $instrument->name
                         );
                  $bonds[] = $bond;       
             }
@@ -170,7 +171,8 @@ class TIClient {
                         $instrument->isin,
                         $instrument->minPriceIncrement,
                         $instrument->lot,
-                        $currency
+                        $currency,
+                        $instrument->name
                         );
                  $etfs[] = $etf;       
             }
@@ -200,7 +202,8 @@ class TIClient {
                         NULL,
                         $instrument->minPriceIncrement,
                         $instrument->lot,
-                        $currency
+                        $currency,
+                        $instrument->name,
                         );
                  $currencies[] = $curr;       
             }
