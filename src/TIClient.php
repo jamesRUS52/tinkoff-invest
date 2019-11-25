@@ -140,7 +140,8 @@ class TIClient {
                         $instrument->isin,
                         $instrument->minPriceIncrement,
                         $instrument->lot,
-                        $currency
+                        $currency,
+                        $instrument->name
                         );
                  $bonds[] = $bond;       
             }
@@ -170,7 +171,8 @@ class TIClient {
                         $instrument->isin,
                         $instrument->minPriceIncrement,
                         $instrument->lot,
-                        $currency
+                        $currency,
+                        $instrument->name
                         );
                  $etfs[] = $etf;       
             }
@@ -200,7 +202,8 @@ class TIClient {
                         NULL,
                         $instrument->minPriceIncrement,
                         $instrument->lot,
-                        $currency
+                        $currency,
+                        $instrument->name
                         );
                  $currencies[] = $curr;       
             }
@@ -226,7 +229,8 @@ class TIClient {
                 $isin,
                 $response->payload->instruments[0]->minPriceIncrement,
                 $response->payload->instruments[0]->lot,
-                $currency
+                $currency,
+                $response->payload->instruments[0]->name
                 );
         
         return $instrument;
@@ -250,7 +254,8 @@ class TIClient {
                 $response->payload->isin,
                 $response->payload->minPriceIncrement,
                 $response->payload->lot,
-                $currency
+                $currency,
+                $response->payload->name
                 );
         
         return $instrument;
