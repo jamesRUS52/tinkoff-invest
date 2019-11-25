@@ -109,7 +109,8 @@ class TIClient {
                         $instrument->isin,
                         $instrument->minPriceIncrement,
                         $instrument->lot,
-                        $currency
+                        $currency,
+                        $instrument->name
                         );
                  $stocks[] = $stock;       
             }

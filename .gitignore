@@ -3,3 +3,4 @@ nbproject
 ### Composer ###
 composer.phar
 vendor/
+.idea/
