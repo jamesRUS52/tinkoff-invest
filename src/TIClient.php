@@ -523,23 +523,38 @@ class TIClient {
 
     /**
      * Получить стакан
+     *
      * @param string $figi
-     * @param int $depth
+     * @param int    $depth
+     *
      * @return \jamesRUS52\TinkoffInvest\TIOrderBook
      */
-    public function getOrderBook($figi,$depth=1)
+    public function getOrderBook($figi, $depth = 1, $timeoutMs = 5000)
     {
-        if ($depth < 1)
-            $depth =1;
-        if ($depth >20)
-            $depth = 20;
+        if ($depth < 1) $depth = 1;
+        if ($depth > 20) $depth = 20;
         $this->orderbookSubscribtion($figi, $depth);
-        $response = $this->wsClient->receive();
-        
+
+        // Костыль by xpundel
+        // Иногда из сокета приходит пустая строка, wsClient возвращает ее. Тут мы ждем пока не придет реальная строка.
+        // Если этого не сделать, то появляется баг. Строка, которую мы ждем на этом запросе – придет в следующем,
+        // т.е. при последовательном запросе ордербуков для нескольких инструментов в цикле ответы начинают возвращаться
+        // со смещением на следующий запрос.
+        // Чтобы не зависало, когда не работает биржа, добавляем выход по таймауту
+        $response = '';
+        $t = microtime(true);
+        while (!$response) {
+            $response = $this->wsClient->receive();
+            if (microtime(true) - $t > $timeoutMs / 1000) break;
+        }
+
         $this->orderbookSubscribtion($figi, $depth, "unsubscribe");
         $json = json_decode($response);
-        $orderbook = new TIOrderBook($json->payload->depth,$json->payload->bids,$json->payload->asks,$json->payload->figi);
-        return $orderbook;
+        if ($json) {
+            return new TIOrderBook($json->payload->depth, $json->payload->bids, $json->payload->asks, $json->payload->figi);
+        }
+
+        return null;
     }
     
     private function instrumentInfoSubscribtion($figi,$action="subscribe")
