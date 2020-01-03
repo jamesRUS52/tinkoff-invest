@@ -133,12 +133,12 @@ class TIClient {
             if ($tickers === null || in_array($instrument->ticker, $tickers))
             {
                 $currency = TICurrencyEnum::getCurrency($instrument->currency);
-
+                $minPriceIncrement = (isset($instrument->minPriceIncrement)) ? $instrument->minPriceIncrement : null;
                 $bond = new TIInstrument(
                         $instrument->figi,
                         $instrument->ticker,
                         $instrument->isin,
-                        $instrument->minPriceIncrement,
+                        $minPriceIncrement,
                         $instrument->lot,
                         $currency,
                         $instrument->name
@@ -195,7 +195,7 @@ class TIClient {
             if ($tickers === null || in_array($instrument->ticker, $tickers))
             {
                 $currency = TICurrencyEnum::getCurrency($instrument->currency);
-
+                
                 $curr = new TIInstrument(
                         $instrument->figi,
                         $instrument->ticker,
@@ -248,10 +248,11 @@ class TIClient {
         
         $currency = TICurrencyEnum::getCurrency($response->payload->currency);
 
+        $isin = (isset($response->payload->isin)) ? $response->payload->isin : null;
         $instrument = new TIInstrument(
                 $response->payload->figi,
                 $response->payload->ticker,
-                $response->payload->isin,
+                $isin,
                 $response->payload->minPriceIncrement,
                 $response->payload->lot,
                 $currency,
@@ -360,7 +361,7 @@ class TIClient {
     {
         $orders = array();
         $response = $this->sendRequest("/orders","GET");
-        
+        var_dump($response);
         foreach ($response->payload as $order)
         {
             if ($orderIds === null || in_array($order->orderId, $orderIds))
@@ -390,10 +391,10 @@ class TIClient {
      * @param string $figi
      * @return \jamesRUS52\TinkoffInvest\TIOperation[]
      */
-    public function getOperations($fromDate, $intervalDays, $figi = null)
+    public function getOperations($fromDate, $toDate, $figi = null)
     {
         $operations = array();
-        $response = $this->sendRequest("/operations","GET",["from"=>$fromDate->format("Y-m-d"),"interval"=>$intervalDays,"figi"=>$figi]);
+        $response = $this->sendRequest("/operations","GET",["from"=>$fromDate->format("c"),"to"=>$toDate->format("c"),"figi"=>$figi]);
         foreach ($response->payload->operations as $operation)
         {
             $trades = (isset($operation->trades)) ? $operation->trades : [];

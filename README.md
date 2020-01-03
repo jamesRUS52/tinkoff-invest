@@ -1,5 +1,7 @@
 # PHP client for Tinkoff invest API (PHP клиент для API Тинькофф инвестиции)
 
+![](https://github.com/jamesRUS52/tinkoff-invest/workflows/Tests/badge.svg)
+
 ## How to install
 ```
 composer require james.rus52/tinkoffinvest
