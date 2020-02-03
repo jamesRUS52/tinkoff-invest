@@ -319,7 +319,7 @@ class TIClient
               $account->brokerAccountId
             );
         }
-        return $account;
+        return $accounts;
     }
 
 
