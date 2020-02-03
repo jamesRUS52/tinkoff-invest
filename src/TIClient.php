@@ -338,7 +338,7 @@ class TIClient
         $response = $this->sendRequest(
           "/portfolio/currencies",
           "GET",
-          $params ? $params : []
+          $params
         );
 
         foreach ($response->payload->currencies as $currency) {
@@ -352,7 +352,7 @@ class TIClient
         }
 
         $instrs   = [];
-        $response = $this->sendRequest("/portfolio", "GET",$params ? $params : []);
+        $response = $this->sendRequest("/portfolio", "GET",$params);
 
         foreach ($response->payload->positions as $position) {
             $expectedYeildCurrency = null;
