@@ -495,7 +495,12 @@ class TIClient
             ]
         );
         foreach ($response->payload->operations as $operation) {
-            $trades = (isset($operation->trades)) ? $operation->trades : [];
+            $trades = new TIOperationTrade(
+                empty($operation->trades->tradeId) ? null : $operation->trades->tradeId,
+                empty($operation->trades->date) ? null : $operation->trades->date,
+                empty($operation->trades->price) ? null : $operation->trades->price,
+                empty($operation->trades->quantity) ? null : $operation->trades->quantity
+            );
             $commissionCurrency = (isset($operation->commision)) ? TICurrencyEnum::getCurrency(
                 $operation->commision->currency
             ) : null;
