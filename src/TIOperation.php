@@ -18,9 +18,8 @@ class TIOperation {
     
     private $id;
     private $status;
-    private $trades = array();
-    private $commisionCurrency;
-    private $commisionValue;
+    private $trades;
+    private $commission;
     private $currency;
     private $payment;
     private $price;
@@ -31,12 +30,11 @@ class TIOperation {
     private $date;
     private $operationType;
     
-    function __construct($id, $status, $trades, $commisionCurrency, $commisionValue, $currency, $payment, $price, $quantity, $figi, $instrumentType, $isMarginCall, $date, $operationType) {
+    function __construct($id, $status, $trades, $commission , $currency, $payment, $price, $quantity, $figi, $instrumentType, $isMarginCall, $date, $operationType) {
         $this->id = $id;
         $this->status = $status;
         $this->trades = $trades;
-        $this->commisionCurrency = $commisionCurrency;
-        $this->commisionValue = $commisionValue;
+        $this->commission = $commission;
         $this->currency = $currency;
         $this->payment = $payment;
         $this->price = $price;
@@ -60,12 +58,8 @@ class TIOperation {
         return $this->trades;
     }
 
-    function getCommisionCurrency() {
-        return $this->commisionCurrency;
-    }
-
-    function getCommisionValue() {
-        return $this->commisionValue;
+    function getCommission() {
+        return $this->commission;
     }
 
     function getCurrency() {
