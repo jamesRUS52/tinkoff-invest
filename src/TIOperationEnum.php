@@ -19,7 +19,7 @@ abstract class TIOperationEnum {
     const SELL = "Sell";
     const BUY_CARD = 'BuyCard';
     const BROKER_COMMISSION = 'BrokerCommission';
-    const EXCHANGE_COMMISSION_='ExchangeCommission';
+    const EXCHANGE_COMMISSION ='ExchangeCommission';
     const SERVICE_COMMISSION = 'ServiceCommission';
     const MARGIN_COMMISSION = 'MarginCommission';
     const OTHER_COMMISSION = 'OtherCommission';
@@ -39,8 +39,10 @@ abstract class TIOperationEnum {
 
     /**
      * Get Operation enum
+     *
      * @param string $operation
-     * @return TIOperationEnum
+     *
+     * @return string
      */
     public static function getOperation($operation)
     {
@@ -51,10 +53,10 @@ abstract class TIOperationEnum {
             case "Sell" : return TIOperationEnum::SELL;
                 break;
             case "BuyCard" : return TIOperationEnum::BUY_CARD;
-            break;
+                break;
             case "BrokerCommission" : return TIOperationEnum::BROKER_COMMISSION;
                 break;
-            case "ExchangeCommission" : return TIOperationEnum::EXCHANGE_COMMISSION_;
+            case "ExchangeCommission" : return TIOperationEnum::EXCHANGE_COMMISSION;
                 break;
             case "ServiceCommission" : return TIOperationEnum::SERVICE_COMMISSION;
                 break;
