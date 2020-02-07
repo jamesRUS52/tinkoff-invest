@@ -43,7 +43,7 @@ class TIClient
     function __construct($token, $site)
     {
         $this->token = $token;
-        $this->url   = $site;
+        $this->url = $site;
         $this->wsConnect();
     }
 
@@ -80,13 +80,13 @@ class TIClient
      */
     public function sbPositionBalance($balance, $figi)
     {
-        $request      = ["figi" => $figi, "balance" => $balance];
+        $request = ["figi" => $figi, "balance" => $balance];
         $request_body = json_encode($request, JSON_NUMERIC_CHECK);
-        $response     = $this->sendRequest(
-          "/sandbox/positions/balance",
-          "POST",
-          [],
-          $request_body
+        $response = $this->sendRequest(
+            "/sandbox/positions/balance",
+            "POST",
+            [],
+            $request_body
         );
         return $response->status;
     }
@@ -101,13 +101,13 @@ class TIClient
      */
     public function sbCurrencyBalance($balance, $currency = TICurrencyEnum::RUB)
     {
-        $request      = ["currency" => $currency, "balance" => $balance];
+        $request = ["currency" => $currency, "balance" => $balance];
         $request_body = json_encode($request, JSON_NUMERIC_CHECK);
-        $response     = $this->sendRequest(
-          "/sandbox/currencies/balance",
-          "POST",
-          [],
-          $request_body
+        $response = $this->sendRequest(
+            "/sandbox/currencies/balance",
+            "POST",
+            [],
+            $request_body
         );
         return $response->status;
     }
@@ -121,21 +121,21 @@ class TIClient
      */
     public function getStocks($tickers = null)
     {
-        $stocks   = [];
+        $stocks = [];
         $response = $this->sendRequest("/market/stocks", "GET");
 
         foreach ($response->payload->instruments as $instrument) {
             if ($tickers === null || in_array($instrument->ticker, $tickers)) {
                 $currency = TICurrencyEnum::getCurrency($instrument->currency);
 
-                $stock    = new TIInstrument(
-                  $instrument->figi,
-                  $instrument->ticker,
-                  $instrument->isin,
-                  $instrument->minPriceIncrement,
-                  $instrument->lot,
-                  $currency,
-                  $instrument->name
+                $stock = new TIInstrument(
+                    $instrument->figi,
+                    $instrument->ticker,
+                    $instrument->isin,
+                    $instrument->minPriceIncrement,
+                    $instrument->lot,
+                    $currency,
+                    $instrument->name
                 );
                 $stocks[] = $stock;
             }
@@ -152,25 +152,25 @@ class TIClient
      */
     public function getBonds($tickers = null)
     {
-        $bonds    = [];
+        $bonds = [];
         $response = $this->sendRequest("/market/bonds", "GET");
 
         foreach ($response->payload->instruments as $instrument) {
             if ($tickers === null || in_array($instrument->ticker, $tickers)) {
-                $currency          = TICurrencyEnum::getCurrency(
-                  $instrument->currency
+                $currency = TICurrencyEnum::getCurrency(
+                    $instrument->currency
                 );
                 $minPriceIncrement = (isset($instrument->minPriceIncrement)) ? $instrument->minPriceIncrement : null;
-                $bond              = new TIInstrument(
-                  $instrument->figi,
-                  $instrument->ticker,
-                  $instrument->isin,
-                  $minPriceIncrement,
-                  $instrument->lot,
-                  $currency,
-                  $instrument->name
+                $bond = new TIInstrument(
+                    $instrument->figi,
+                    $instrument->ticker,
+                    $instrument->isin,
+                    $minPriceIncrement,
+                    $instrument->lot,
+                    $currency,
+                    $instrument->name
                 );
-                $bonds[]           = $bond;
+                $bonds[] = $bond;
             }
         }
         return $bonds;
@@ -185,21 +185,21 @@ class TIClient
      */
     public function getEtfs($tickers = null)
     {
-        $etfs     = [];
+        $etfs = [];
         $response = $this->sendRequest("/market/etfs", "GET");
 
         foreach ($response->payload->instruments as $instrument) {
             if ($tickers === null || in_array($instrument->ticker, $tickers)) {
                 $currency = TICurrencyEnum::getCurrency($instrument->currency);
 
-                $etf    = new TIInstrument(
-                  $instrument->figi,
-                  $instrument->ticker,
-                  $instrument->isin,
-                  $instrument->minPriceIncrement,
-                  $instrument->lot,
-                  $currency,
-                  $instrument->name
+                $etf = new TIInstrument(
+                    $instrument->figi,
+                    $instrument->ticker,
+                    $instrument->isin,
+                    $instrument->minPriceIncrement,
+                    $instrument->lot,
+                    $currency,
+                    $instrument->name
                 );
                 $etfs[] = $etf;
             }
@@ -217,20 +217,20 @@ class TIClient
     public function getCurrencies($tickers = null)
     {
         $currencies = [];
-        $response   = $this->sendRequest("/market/currencies", "GET");
+        $response = $this->sendRequest("/market/currencies", "GET");
 
         foreach ($response->payload->instruments as $instrument) {
             if ($tickers === null || in_array($instrument->ticker, $tickers)) {
                 $currency = TICurrencyEnum::getCurrency($instrument->currency);
 
-                $curr         = new TIInstrument(
-                  $instrument->figi,
-                  $instrument->ticker,
-                  null,
-                  $instrument->minPriceIncrement,
-                  $instrument->lot,
-                  $currency,
-                  $instrument->name
+                $curr = new TIInstrument(
+                    $instrument->figi,
+                    $instrument->ticker,
+                    null,
+                    $instrument->minPriceIncrement,
+                    $instrument->lot,
+                    $currency,
+                    $instrument->name
                 );
                 $currencies[] = $curr;
             }
@@ -247,25 +247,25 @@ class TIClient
      */
     public function getInstrumentByTicker($ticker)
     {
-        $stocks   = [];
+        $stocks = [];
         $response = $this->sendRequest(
-          "/market/search/by-ticker",
-          "GET",
-          ["ticker" => $ticker]
+            "/market/search/by-ticker",
+            "GET",
+            ["ticker" => $ticker]
         );
 
-        $currency   = TICurrencyEnum::getCurrency(
-          $response->payload->instruments[0]->currency
+        $currency = TICurrencyEnum::getCurrency(
+            $response->payload->instruments[0]->currency
         );
-        $isin       = (isset($response->payload->instruments[0]->isin)) ? $response->payload->instruments[0]->isin : null;
+        $isin = (isset($response->payload->instruments[0]->isin)) ? $response->payload->instruments[0]->isin : null;
         $instrument = new TIInstrument(
-          $response->payload->instruments[0]->figi,
-          $response->payload->instruments[0]->ticker,
-          $isin,
-          $response->payload->instruments[0]->minPriceIncrement,
-          $response->payload->instruments[0]->lot,
-          $currency,
-          $response->payload->instruments[0]->name
+            $response->payload->instruments[0]->figi,
+            $response->payload->instruments[0]->ticker,
+            $isin,
+            $response->payload->instruments[0]->minPriceIncrement,
+            $response->payload->instruments[0]->lot,
+            $currency,
+            $response->payload->instruments[0]->name
         );
 
         return $instrument;
@@ -280,24 +280,24 @@ class TIClient
      */
     public function getInstrumentByFigi($figi)
     {
-        $stocks   = [];
+        $stocks = [];
         $response = $this->sendRequest(
-          "/market/search/by-figi",
-          "GET",
-          ["figi" => $figi]
+            "/market/search/by-figi",
+            "GET",
+            ["figi" => $figi]
         );
 
         $currency = TICurrencyEnum::getCurrency($response->payload->currency);
 
-        $isin       = (isset($response->payload->isin)) ? $response->payload->isin : null;
+        $isin = (isset($response->payload->isin)) ? $response->payload->isin : null;
         $instrument = new TIInstrument(
-          $response->payload->figi,
-          $response->payload->ticker,
-          $isin,
-          $response->payload->minPriceIncrement,
-          $response->payload->lot,
-          $currency,
-          $response->payload->name
+            $response->payload->figi,
+            $response->payload->ticker,
+            $isin,
+            $response->payload->minPriceIncrement,
+            $response->payload->lot,
+            $currency,
+            $response->payload->name
         );
 
         return $instrument;
@@ -315,8 +315,8 @@ class TIClient
         $accounts = [];
         foreach ($response->payload->accounts as $index => $account) {
             $accounts [] = new TIAccount(
-              $account->brokerAccountType,
-              $account->brokerAccountId
+                $account->brokerAccountType,
+                $account->brokerAccountId
             );
         }
         return $accounts;
@@ -333,51 +333,51 @@ class TIClient
      */
     public function getPortfolio(TIAccount $account = null)
     {
-        $currs  = [];
+        $currs = [];
         $params = [];
         if ($account) {
             $params = ['brokerAccountId' => $account->getBrokerAccountId()];
         }
         $response = $this->sendRequest(
-          "/portfolio/currencies",
-          "GET",
-          $params
+            "/portfolio/currencies",
+            "GET",
+            $params
         );
 
         foreach ($response->payload->currencies as $currency) {
             $ticurrency = TICurrencyEnum::getCurrency($currency->currency);
 
-            $curr    = new TIPortfolioCurrency(
-              $currency->balance,
-              $ticurrency
+            $curr = new TIPortfolioCurrency(
+                $currency->balance,
+                $ticurrency
             );
             $currs[] = $curr;
         }
 
-        $instrs   = [];
-        $response = $this->sendRequest("/portfolio", "GET",$params);
+        $instrs = [];
+        $response = $this->sendRequest("/portfolio", "GET", $params);
 
         foreach ($response->payload->positions as $position) {
             $expectedYeildCurrency = null;
-            $expectedYeildValue    = null;
+            $expectedYeildValue = null;
             //var_dump($position);
             if (isset($position->expectedYield)) {
                 $expectedYeildCurrency = TICurrencyEnum::getCurrency(
-                  $position->expectedYield->currency
+                    $position->expectedYield->currency
                 );
-                $expectedYeildValue    = $position->expectedYield->value;
+                $expectedYeildValue = $position->expectedYield->value;
             }
 
-            $isin     = (isset($position->isin)) ? $position->isin : null;
-            $instr    = new TIPortfolioInstrument(
-              $position->figi,
-              $position->ticker,
-              $isin,
-              $position->instrumentType,
-              $position->balance,
-              $position->lots,
-              $expectedYeildValue,
-              $expectedYeildCurrency
+            $isin = (isset($position->isin)) ? $position->isin : null;
+            $instr = new TIPortfolioInstrument(
+                $position->figi,
+                $position->ticker,
+                $isin,
+                $position->instrumentType,
+                $position->balance,
+                $position->lots,
+                $expectedYeildValue,
+                $expectedYeildCurrency
             );
             $instrs[] = $instr;
         }
@@ -397,36 +397,36 @@ class TIClient
     public function sendOrder($figi, $lots, $operation, $price)
     {
         $req_body = json_encode(
-          (object)[
-            "lots"      => $lots,
-            "operation" => $operation,
-            "price"     => $price,
-          ]
+            (object)[
+                "lots" => $lots,
+                "operation" => $operation,
+                "price" => $price,
+            ]
         );
         $response = $this->sendRequest(
-          "/orders/limit-order",
-          "POST",
-          ["figi" => $figi],
-          $req_body
+            "/orders/limit-order",
+            "POST",
+            ["figi" => $figi],
+            $req_body
         );
         //var_dump($response);
 
-        $commisionValue    = (isset($response->payload->commision)) ? $response->payload->commision->value : null;
+        $commisionValue = (isset($response->payload->commision)) ? $response->payload->commision->value : null;
         $commisionCurrency = (isset($response->payload->commision)) ? TICurrencyEnum::getCurrency(
-          $response->payload->commision->currency
+            $response->payload->commision->currency
         ) : null;
-        $rejectReason      = (isset($response->payload->rejectReason)) ? $response->payload->rejectReason : null;
+        $rejectReason = (isset($response->payload->rejectReason)) ? $response->payload->rejectReason : null;
         return new TIOrder(
-          $response->payload->orderId,
-          TIOperationEnum::getOperation($response->payload->operation),
-          $response->payload->status,
-          $rejectReason,
-          $response->payload->requestedLots,
-          $response->payload->executedLots,
-          $commisionCurrency,
-          $commisionValue,
-          null, // figi
-          null // type
+            $response->payload->orderId,
+            TIOperationEnum::getOperation($response->payload->operation),
+            $response->payload->status,
+            $rejectReason,
+            $response->payload->requestedLots,
+            $response->payload->executedLots,
+            $commisionCurrency,
+            $commisionValue,
+            null, // figi
+            null // type
         );
     }
 
@@ -440,9 +440,9 @@ class TIClient
     public function cancelOrder($orderId)
     {
         $response = $this->sendRequest(
-          "/orders/cancel",
-          "POST",
-          ["orderId" => $orderId]
+            "/orders/cancel",
+            "POST",
+            ["orderId" => $orderId]
         );
         //var_dump($response);
 
@@ -451,22 +451,22 @@ class TIClient
 
     public function getOrders($orderIds = null)
     {
-        $orders   = [];
+        $orders = [];
         $response = $this->sendRequest("/orders", "GET");
         var_dump($response);
         foreach ($response->payload as $order) {
             if ($orderIds === null || in_array($order->orderId, $orderIds)) {
-                $ord      = new TIOrder(
-                  $order->orderId,
-                  TIOperationEnum::getOperation($order->operation),
-                  $order->status,
-                  null, // rejected
-                  $order->requestedLots,
-                  $order->executedLots,
-                  null, // comm currency
-                  null, // comm value
-                  $order->figi,
-                  $order->type
+                $ord = new TIOrder(
+                    $order->orderId,
+                    TIOperationEnum::getOperation($order->operation),
+                    $order->status,
+                    null, // rejected
+                    $order->requestedLots,
+                    $order->executedLots,
+                    null, // comm currency
+                    null, // comm value
+                    $order->figi,
+                    $order->type
                 );
                 $orders[] = $ord;
             }
@@ -485,38 +485,39 @@ class TIClient
     public function getOperations($fromDate, $toDate, $figi = null)
     {
         $operations = [];
-        $response   = $this->sendRequest(
-          "/operations",
-          "GET",
-          [
-            "from" => $fromDate->format("c"),
-            "to"   => $toDate->format("c"),
-            "figi" => $figi,
-          ]
+        $response = $this->sendRequest(
+            "/operations",
+            "GET",
+            [
+                "from" => $fromDate->format("c"),
+                "to" => $toDate->format("c"),
+                "figi" => $figi,
+            ]
         );
         foreach ($response->payload->operations as $operation) {
-            $trades            = (isset($operation->trades)) ? $operation->trades : [];
-            $commisionCurrency = (isset($operation->commision)) ? TICurrencyEnum::getCurrency(
-              $operation->commision->currency
+            $trades = (isset($operation->trades)) ? $operation->trades : [];
+            $commissionCurrency = (isset($operation->commision)) ? TICurrencyEnum::getCurrency(
+                $operation->commision->currency
             ) : null;
-            $commisionValue    = (isset($operation->commision)) ? $operation->commision->value : null;
-            $opr               = new TIOperation(
-              $operation->id,
-              $operation->status,
-              $trades,
-              $commisionCurrency,
-              $commisionValue,
-              TICurrencyEnum::getCurrency($operation->currency),
-              $operation->payment,
-              $operation->price,
-              $operation->quantity,
-              $operation->figi,
-              $operation->instrumentType,
-              $operation->isMarginCall,
-              new \DateTime($operation->date),
-              TIOperationEnum::getOperation($operation->operationType)
+            $commissionValue = (isset($operation->commision)) ? $operation->commision->value : null;
+            $opr = new TIOperation(
+                $operation->id,
+                $operation->status,
+                $trades,
+                new TICommission($commissionCurrency, $commissionValue),
+                TICurrencyEnum::getCurrency($operation->currency),
+                $operation->payment,
+                empty($operation->price) ? null : $operation->price,
+                empty($operation->quantity) ? null : $operation->quantity,
+                empty($operation->figi) ? null : $operation->figi,
+                empty($operation->instrumentType) ? null : $operation->instrumentType,
+                $operation->isMarginCall,
+                new \DateTime($operation->date),
+                TIOperationEnum::getOperation(
+                    empty($operation->operationType) ? null : $operation->operationType
+                )
             );
-            $operations[]      = $opr;
+            $operations[] = $opr;
         }
         return $operations;
     }
@@ -533,10 +534,10 @@ class TIClient
      * @throws TIException
      */
     private function sendRequest(
-      $action,
-      $method,
-      $req_params = [],
-      $req_body = null
+        $action,
+        $method,
+        $req_params = [],
+        $req_body = null
     ) {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $this->url . $action);
@@ -545,11 +546,11 @@ class TIClient
 
         if (count($req_params) > 0) {
             curl_setopt(
-              $curl,
-              CURLOPT_URL,
-              $this->url . $action . '?' . http_build_query(
-                $req_params
-              )
+                $curl,
+                CURLOPT_URL,
+                $this->url . $action . '?' . http_build_query(
+                    $req_params
+                )
             );
         }
 
@@ -559,12 +560,12 @@ class TIClient
         }
 
         curl_setopt(
-          $curl,
-          CURLOPT_HTTPHEADER,
-          [
-            'Content-Type:application/json',
-            'Authorization: Bearer ' . $this->token,
-          ]
+            $curl,
+            CURLOPT_HTTPHEADER,
+            [
+                'Content-Type:application/json',
+                'Authorization: Bearer ' . $this->token,
+            ]
         );
 
         $out = curl_exec($curl);
@@ -592,16 +593,15 @@ class TIClient
     {
         try {
             $this->wsClient = new Client(
-              "wss://api-invest.tinkoff.ru/openapi/md/v1/md-openapi/ws",
-              [
-                "timeout" => 60,
-                "headers" => ["authorization" => "Bearer {$this->token}"],
-              ]
+                "wss://api-invest.tinkoff.ru/openapi/md/v1/md-openapi/ws",
+                [
+                    "timeout" => 60,
+                    "headers" => ["authorization" => "Bearer {$this->token}"],
+                ]
             );
         } catch (\Exception $e) {
             throw new \jamesRUS52\TinkoffInvest\TIException(
-              "Can't connect to stream API. " . $e->getCode(
-              ) . ' ' . $e->getMessage()
+                "Can't connect to stream API. " . $e->getCode() . ' ' . $e->getMessage()
             );
         }
     }
@@ -633,18 +633,18 @@ class TIClient
         $this->candleSubscribtion($figi, $interval);
         $response = $this->wsClient->receive();
         $this->candleSubscribtion($figi, $interval, "unsubscribe");
-        $json   = json_decode($response);
+        $json = json_decode($response);
         $candle = new TICandle(
-          $json->payload->o,
-          $json->payload->c,
-          $json->payload->h,
-          $json->payload->l,
-          $json->payload->v,
-          new \DateTime($json->payload->time),
-          TICandleIntervalEnum::getInterval(
-            $json->payload->interval
-          ),
-          $json->payload->figi
+            $json->payload->o,
+            $json->payload->c,
+            $json->payload->h,
+            $json->payload->l,
+            $json->payload->v,
+            new \DateTime($json->payload->time),
+            TICandleIntervalEnum::getInterval(
+                $json->payload->interval
+            ),
+            $json->payload->figi
         );
         return $candle;
     }
@@ -682,12 +682,12 @@ class TIClient
         $response = $this->wsClient->receive();
 
         $this->orderbookSubscribtion($figi, $depth, "unsubscribe");
-        $json      = json_decode($response);
+        $json = json_decode($response);
         $orderbook = new TIOrderBook(
-          $json->payload->depth,
-          $json->payload->bids,
-          $json->payload->asks,
-          $json->payload->figi
+            $json->payload->depth,
+            $json->payload->bids,
+            $json->payload->asks,
+            $json->payload->figi
         );
         return $orderbook;
     }
@@ -716,12 +716,12 @@ class TIClient
         $this->instrumentInfoSubscribtion($figi);
         $response = $this->wsClient->receive();
         $this->instrumentInfoSubscribtion($figi, "unsubscribe");
-        $json       = json_decode($response);
+        $json = json_decode($response);
         $instrument = new TIInstrumentInfo(
-          $json->payload->trade_status,
-          $json->payload->min_price_increment,
-          $json->payload->lot,
-          $json->payload->figi
+            $json->payload->trade_status,
+            $json->payload->min_price_increment,
+            $json->payload->lot,
+            $json->payload->figi
         );
         if (isset($json->payload->accrued_interest)) {
             $instrument->setAccrued_interest($json->payload->accrued_interest);
@@ -768,52 +768,52 @@ class TIClient
 
 
     public function startGetting(
-      $callback,
-      $max_response = 10,
-      $max_time_sec = 60
+        $callback,
+        $max_response = 10,
+        $max_time_sec = 60
     ) {
-        $this->startGetting        = true;
-        $this->response_now        = 0;
+        $this->startGetting = true;
+        $this->response_now = 0;
         $this->response_start_time = time();
         while (true) {
             $response = $this->wsClient->receive();
-            $json     = json_decode($response);
+            $json = json_decode($response);
             if (!isset($json->event) || $json === null) {
                 continue;
             }
             switch ($json->event) {
                 case "candle" :
                     $object = new TICandle(
-                      $json->payload->o,
-                      $json->payload->c,
-                      $json->payload->h,
-                      $json->payload->l,
-                      $json->payload->v,
-                      new \DateTime($json->payload->time),
-                      TICandleIntervalEnum::getInterval(
-                        $json->payload->interval
-                      ),
-                      $json->payload->figi
+                        $json->payload->o,
+                        $json->payload->c,
+                        $json->payload->h,
+                        $json->payload->l,
+                        $json->payload->v,
+                        new \DateTime($json->payload->time),
+                        TICandleIntervalEnum::getInterval(
+                            $json->payload->interval
+                        ),
+                        $json->payload->figi
                     );
                     break;
                 case "orderbook" :
                     $object = new TIOrderBook(
-                      $json->payload->depth,
-                      $json->payload->bids,
-                      $json->payload->asks,
-                      $json->payload->figi
+                        $json->payload->depth,
+                        $json->payload->bids,
+                        $json->payload->asks,
+                        $json->payload->figi
                     );
                     break;
                 case "instrument_info" :
                     $object = new TIInstrumentInfo(
-                      $json->payload->trade_status,
-                      $json->payload->min_price_increment,
-                      $json->payload->lot,
-                      $json->payload->figi
+                        $json->payload->trade_status,
+                        $json->payload->min_price_increment,
+                        $json->payload->lot,
+                        $json->payload->figi
                     );
                     if (isset($json->payload->accrued_interest)) {
                         $object->setAccrued_interest(
-                          $json->payload->accrued_interest
+                            $json->payload->accrued_interest
                         );
                     }
                     if (isset($json->payload->limit_up)) {
@@ -828,7 +828,7 @@ class TIClient
 
             $this->response_now++;
             if ($this->startGetting === false || ($max_response !== null && $this->response_now >= $max_response) || ($max_time_sec !== null && time(
-                                                                                                                                                ) > $this->response_start_time + $max_time_sec)) {
+                    ) > $this->response_start_time + $max_time_sec)) {
                 break;
             }
         }
