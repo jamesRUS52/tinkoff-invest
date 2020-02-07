@@ -24,7 +24,7 @@ class TICommission
 
     public function getValue()
     {
-        return $this->getValue();
+        return $this->value;
     }
 
 }

@@ -18,7 +18,7 @@ class TIOperation {
     
     private $id;
     private $status;
-    private $trades = array();
+    private $trades;
     private $commission;
     private $currency;
     private $payment;
@@ -58,12 +58,8 @@ class TIOperation {
         return $this->trades;
     }
 
-    function getCommisionCurrency() {
-        return $this->commisionCurrency;
-    }
-
-    function getCommisionValue() {
-        return $this->commisionValue;
+    function getCommission() {
+        return $this->commission;
     }
 
     function getCurrency() {
