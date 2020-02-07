@@ -326,7 +326,10 @@ class TIClient
     /**
      * Получить портфель клиента
      *
+     * @param \jamesRUS52\TinkoffInvest\TIAccount|null $account
+     *
      * @return TIPortfolio
+     * @throws \jamesRUS52\TinkoffInvest\TIException
      */
     public function getPortfolio(TIAccount $account = null)
     {

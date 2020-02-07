@@ -154,4 +154,10 @@ class TIClientTest extends TestCase {
         $this->assertGreaterThan(1, $operations);
 
     }
+
+    public function testgetAccounts()
+    {
+        $accounts = $this->fixture->getAccounts();
+        $this->assertGreaterThan(1,$accounts);
+    }
 }
