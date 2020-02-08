@@ -85,9 +85,15 @@ or by figi
 ```php
 $instr = $client->getInstrumentByFigi("BBG000BR37X2");
 ```
-Get portfolio
+
+Get accounts
 ```php
-$port = $client->getPortfolio();
+$accounts = $client->getAccounts(); 
+```
+
+Get portfolio (if null, used default Tinkoff account) 
+```php
+$port = $client->getPortfolio(TIAccount $account = null);
 ```
 Get portfolio balance
 ```php

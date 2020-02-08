@@ -477,12 +477,14 @@ class TIClient
     /**
      *
      * @param \DateTime $fromDate
-     * @param \TIIntervalEnum $intervalDays
+     * @param $toDate
      * @param string $figi
+     * @param TIAccount|null $account
      *
      * @return \jamesRUS52\TinkoffInvest\TIOperation[]
+     * @throws TIException
      */
-    public function getOperations($fromDate, $toDate, $figi = null)
+    public function getOperations($fromDate, $toDate, $figi = null, TIAccount $account = null)
     {
         $operations = [];
         $response = $this->sendRequest(
@@ -492,6 +494,7 @@ class TIClient
                 "from" => $fromDate->format("c"),
                 "to" => $toDate->format("c"),
                 "figi" => $figi,
+                "brokerAccountId" => $account ? $account->getBrokerAccountId() : $account,
             ]
         );
         foreach ($response->payload->operations as $operation) {
