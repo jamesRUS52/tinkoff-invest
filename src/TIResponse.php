@@ -17,7 +17,7 @@ class TIResponse
      */
     private $trackingId;
     /**
-     * @var array
+     * @var stdClass
      */
     private $payload;
     /**
@@ -34,10 +34,10 @@ class TIResponse
     {
         try {
             $result = json_decode($curlResponse);
-            if (!empty($result['trackingId']) && !empty($result['payload']) && !empty($result['status'])) {
-                $this->payload = $result['payload'];
-                $this->trackingId = $result['trackingId'];
-                $this->status = $result['status'];
+            if (!empty($result->trackingId) && !empty($result->payload) && !empty($result->status)) {
+                $this->payload = $result->payload;
+                $this->trackingId = $result->trackingId;
+                $this->status = $result->status;
             } else {
                 throw new TIException('Required fields are empty');
             }
@@ -58,6 +58,9 @@ class TIResponse
         return $this->payload;
     }
 
+    /**
+     * @return string
+     */
     public function getStatus()
     {
         return $this->status;
