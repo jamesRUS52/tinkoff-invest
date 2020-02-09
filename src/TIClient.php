@@ -211,8 +211,6 @@ class TIClient
     }
 
 
-
-
     /**
      * Получение инструмента по тикеру
      *
@@ -276,7 +274,64 @@ class TIClient
 
     }
 
-    
+    /**
+     *
+     *
+     * @param string $figi
+     * @param int $depth
+     * @return TIOrderBook
+     * @throws TIException
+     */
+    public function getHistoryOrderBook($figi, $depth = 1)
+    {
+        if ($depth < 1) {
+            $depth = 1;
+        }
+        if ($depth > 20) {
+            $depth = 20;
+        }
+        $response = $this->sendRequest("/market/orderbook", "GET", [
+            'figi' => $figi,
+            'depth' => $depth,
+        ]);
+
+        return $this->setUpOrderBook($response->getPayload());
+
+    }
+
+    /**
+     * Получение исторических свечей
+     * default figi = AAPL
+     * default from 7Days ago
+     * default to now
+     * default interval 15 min
+     *
+     * @param string $figi
+     * @param string $from
+     * @param string $to
+     * @param string $interval
+     * @return array
+     * @throws TIException
+     */
+    public function getHistoryCandles($figi, $from, $to, $interval)
+    {
+        $fromDate = new DateTime();
+        $fromDate->add('P7D');
+        $toDate = new DateTime();
+
+        $response = $this->sendRequest("/market/candles", "GET", [
+            'figi' => empty($figi) ? 'AAPL' : $figi,
+            'from' => empty($from) ? $fromDate : $from,
+            'to' => empty($to) ? $toDate : $to,
+            'interval' => empty($interval) ? TIIntervalEnum::MIN15 : $interval
+        ]);
+        $array = [];
+        foreach ($response->getPayload()->candles as $candle) {
+            $array []= $this->setUpCandle($candle);
+        }
+        return $array;
+
+    }
 
     /**
      * Получение текущих аккаунтов пользователя
@@ -621,7 +676,7 @@ class TIClient
      * Получить свечу
      *
      * @param string $figi
-     * @param TICandleIntervalEnum $interval
+     * @param string $interval
      *
      * @return TICandle
      * @throws TIException
@@ -835,6 +890,9 @@ class TIClient
     }
 
 
+    /**
+     *
+     */
     public function stopGetting()
     {
         $this->startGetting = false;
@@ -848,10 +906,17 @@ class TIClient
     private function setUpOrderBook($payload)
     {
         return new TIOrderBook(
-            $payload->depth,
-            $payload->bids,
-            $payload->asks,
-            $payload->figi
+            empty($payload->depth) ? null : $payload->depth,
+            empty($payload->bids) ? null : $payload->bids,
+            empty($payload->asks) ? null : $payload->asks,
+            empty($payload->figi) ? null : $payload->figi,
+            empty($payload->tradeStatus) ? null : $payload->tradeStatus,
+            empty($payload->minPriceIncrement) ? null : $payload->minPriceIncrement,
+            empty($payload->faceValue) ? null : $payload->faceValue,
+            empty($payload->lastPrice) ? null : $payload->lastPrice,
+            empty($payload->closePrice) ? null : $payload->closePrice,
+            empty($payload->limitUp) ? null : $payload->limitUp,
+            empty($payload->limitDown) ? null : $payload->limitDown
         );
     }
 
