@@ -312,7 +312,7 @@ class TIClient
      * @param string $from
      * @param string $to
      * @param string $interval
-     * @return array
+     * @return TICandle[]
      * @throws TIException
      */
     public function getHistoryCandles($figi, $from, $to, $interval)
