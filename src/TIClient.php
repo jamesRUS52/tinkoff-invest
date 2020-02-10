@@ -12,6 +12,7 @@ use WebSocket\BadOpcodeException;
 use WebSocket\Client;
 use Exception;
 use DateTime;
+use DateInterval;
 
 /**
  * Description of TIClient
@@ -317,7 +318,7 @@ class TIClient
     public function getHistoryCandles($figi, $from, $to, $interval)
     {
         $fromDate = new DateTime();
-        $fromDate->add('P7D');
+        $fromDate->add(new DateInterval('P7D'));
         $toDate = new DateTime();
 
         $response = $this->sendRequest(
@@ -526,7 +527,8 @@ class TIClient
                     null, // comm currency
                     null, // comm value
                     $order->figi,
-                    $order->type
+                    $order->type,
+                    ''
                 );
                 $orders[] = $ord;
             }
