@@ -113,11 +113,18 @@ Get instrument lots count
 ```php
 print $port->getinstrumentLots("PGR");
 ```
-Send order
+Send limit order (default brokerAccountId = Tinkoff)
 ```php
 $order = $client->sendOrder("BBG000BVPV84", 1, TIOperationEnum::BUY, 1.2);
 print $order->getOrderId();
 ```
+Send market order (default brokerAccountId = Tinkoff)
+```php
+$order = $client->sendOrder("BBG000BVPV84", 1, TIOperationEnum::BUY);
+print $order->getOrderId();
+```
+
+
 Cancel order
 ```php
 $client->cancelOrder($order->getOrderId());
