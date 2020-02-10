@@ -55,7 +55,7 @@ class TIClientTest extends TestCase {
     
     public function testsbPositionBalance()
     {
-        $status = $this->fixture->sbPositionBalance(100, "BBG0013HGFT4");
+        $status = $this->fixture->sbPositionBalance(100, "BBG004730N88");
         $this->assertEquals("Ok", $status);
     }
     
@@ -98,10 +98,9 @@ class TIClientTest extends TestCase {
     public function testgetCurrencies()
     {
         $etfs = $this->fixture->getCurrencies();
-        $this->assertGreaterThan(1, count($etfs));
-        $this->assertInstanceOf(TIInstrument::class, $etfs[0]);
-        
-        $etf = $this->fixture->getCurrencies(["USD000UTSTOM"]);
+        $this->assertContainsOnlyInstancesOf(TIInstrument::class,$etfs);
+
+        $etf = $this->fixture->getCurrencies(["EUR_RUB__TOM"]);
         $this->assertCount(1, $etf);
     }
     
@@ -113,7 +112,7 @@ class TIClientTest extends TestCase {
     
     public function testgetInstrumentByFigi()
     {
-        $instrument = $this->fixture->getInstrumentByFigi("BBG0013HGFT4");
+        $instrument = $this->fixture->getInstrumentByFigi("BBG004730N88");
         $this->assertInstanceOf(TIInstrument::class, $instrument);
     }
     
@@ -125,13 +124,13 @@ class TIClientTest extends TestCase {
     
     public function testsendOrder()
     {
-        $order = $this->fixture->sendOrder("BBG0013HGFT4", 7, TIOperationEnum::BUY, 100);
+        $order = $this->fixture->sendOrder("BBG004RVFCY3", 11, TIOperationEnum::BUY, 100);
         $this->assertInstanceOf(TIOrder::class, $order);
         $this->assertEquals("Fill", $order->getStatus());
         
         $portfolio = $this->fixture->getPortfolio();
-        $lots = $portfolio->getInstrumentLots($this->fixture->getInstrumentByFigi("BBG0013HGFT4")->getTicker());
-        $this->assertEquals(7, $lots);
+        $lots = $portfolio->getInstrumentLots($this->fixture->getInstrumentByFigi("BBG004RVFCY3")->getTicker());
+        $this->assertEquals(11, $lots);
         
         /* we can't check this in sandbox
         $orders = $this->fixture->getOrders([$order->getOrderId()]);
@@ -147,10 +146,9 @@ class TIClientTest extends TestCase {
     
     public function testgetOperations()
     {
-        $from = new \DateTime();
+        $from = new \DateTime('-3 day');
         $to = new \DateTime();
-        $from->sub(new \DateInterval("P1D"));
-        $operations = $this->fixture->getOperations($from, $to);
+        $operations = $this->fixture->getOperations($from, $to,'BBG004RVFCY3');
         $this->assertGreaterThan(1, $operations);
 
     }

@@ -546,7 +546,7 @@ class TIClient
      * @return TIOperation[]
      * @throws TIException
      */
-    public function getOperations($fromDate, $toDate, $figi = null, TIAccount $account = null)
+    public function getOperations($fromDate, $toDate, $figi = null, $account = null)
     {
         $operations = [];
         $response = $this->sendRequest(
@@ -559,6 +559,7 @@ class TIClient
                 "brokerAccountId" => $account ? $account->getBrokerAccountId() : $account,
             ]
         );
+
         foreach ($response->getPayload()->operations as $operation) {
             $trades = new TIOperationTrade(
                 empty($operation->trades->tradeId) ? null : $operation->trades->tradeId,
@@ -652,7 +653,6 @@ class TIClient
             $error_message = "Authorization error";
             throw new TIException ($error_message, $res);
         }
-
         return new TIResponse($out);
     }
 
