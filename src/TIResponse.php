@@ -39,13 +39,13 @@ class TIResponse
                 $this->trackingId = $result->trackingId;
                 $this->status = $result->status;
             } else {
-                throw new TIException('Required fields are empty');
+                throw new Exception('Required fields are empty');
             }
             if ($this->status == 'Error') {
-                throw new TIException('errorMessage = ' . $this->payload->message . ' errorCode = ' . $this->payload->code);
+                throw new Exception('errorMessage = ' . $this->payload->message . ' errorCode = ' . $this->payload->code);
             }
         } catch (Exception $e) {
-            throw new TIException('Can not decode response from api');
+            throw new TIException($e->getMessage());
         }
     }
 
