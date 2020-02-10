@@ -471,7 +471,6 @@ class TIClient
             (object)[
                 "lots" => $lots,
                 "operation" => $operation,
-                "price" => $price,
             ]
         );
         $response = $this->sendRequest(
