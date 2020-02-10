@@ -86,6 +86,16 @@ or by figi
 $instr = $client->getInstrumentByFigi("BBG000BR37X2");
 ```
 
+Get history OrderBook
+```php
+$book = $client->getHistoryOrderBook("BBG000BR37X2", $depth = 1); 
+```
+
+Get historical Candles
+```php
+$candles = $client->getHistoryCandles("BBG000BR37X2", "2019-08-19T18:38:33.131642+03:00", "2019-08-29T18:38:33.131642+03:00", TIIntervalEnum::MIN15);
+```
+
 Get accounts
 ```php
 $accounts = $client->getAccounts(); 

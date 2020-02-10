@@ -321,8 +321,8 @@ class TIClient
 
         $response = $this->sendRequest("/market/candles", "GET", [
             'figi' => empty($figi) ? 'AAPL' : $figi,
-            'from' => empty($from) ? $fromDate : $from,
-            'to' => empty($to) ? $toDate : $to,
+            'from' => empty($from) ? $fromDate->format('c') : $from,
+            'to' => empty($to) ? $toDate->format('c') : $to,
             'interval' => empty($interval) ? TIIntervalEnum::MIN15 : $interval
         ]);
         $array = [];
