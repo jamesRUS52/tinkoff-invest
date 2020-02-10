@@ -147,7 +147,6 @@ class TIClient
     {
         $response = $this->sendRequest("/market/stocks", "GET");
         return $this->setUpLists($response, $tickers);
-
     }
 
     /**
@@ -230,7 +229,8 @@ class TIClient
         $currency = TICurrencyEnum::getCurrency(
             $response->getPayload()->instruments[0]->currency
         );
-        $isin = (isset($response->getPayload()->instruments[0]->isin)) ? $response->getPayload()->instruments[0]->isin : null;
+        $isin = (isset($response->getPayload()->instruments[0]->isin)) ? $response->getPayload(
+        )->instruments[0]->isin : null;
         return new TIInstrument(
             $response->getPayload()->instruments[0]->figi,
             $response->getPayload()->instruments[0]->ticker,
@@ -240,7 +240,6 @@ class TIClient
             $currency,
             $response->getPayload()->instruments[0]->name
         );
-
     }
 
     /**
@@ -271,11 +270,10 @@ class TIClient
             $currency,
             $response->getPayload()->name
         );
-
     }
 
     /**
-     *
+     * Получение исторического стакана
      *
      * @param string $figi
      * @param int $depth
@@ -290,13 +288,16 @@ class TIClient
         if ($depth > 20) {
             $depth = 20;
         }
-        $response = $this->sendRequest("/market/orderbook", "GET", [
-            'figi' => $figi,
-            'depth' => $depth,
-        ]);
+        $response = $this->sendRequest(
+            "/market/orderbook",
+            "GET",
+            [
+                'figi' => $figi,
+                'depth' => $depth,
+            ]
+        );
 
         return $this->setUpOrderBook($response->getPayload());
-
     }
 
     /**
@@ -319,19 +320,23 @@ class TIClient
         $fromDate->add('P7D');
         $toDate = new DateTime();
 
-        $response = $this->sendRequest("/market/candles", "GET", [
-            'figi' => empty($figi) ? 'AAPL' : $figi,
-            'from' => empty($from) ? $fromDate->format('c') : $from,
-            'to' => empty($to) ? $toDate->format('c') : $to,
-            'interval' => empty($interval) ? TIIntervalEnum::MIN15 : $interval
-        ]);
+        $response = $this->sendRequest(
+            "/market/candles",
+            "GET",
+            [
+                'figi' => empty($figi) ? 'AAPL' : $figi,
+                'from' => empty($from) ? $fromDate->format('c') : $from,
+                'to' => empty($to) ? $toDate->format('c') : $to,
+                'interval' => empty($interval) ? TIIntervalEnum::MIN15 : $interval
+            ]
+        );
         $array = [];
         foreach ($response->getPayload()->candles as $candle) {
-            $array []= $this->setUpCandle($candle);
+            $array [] = $this->setUpCandle($candle);
         }
         return $array;
-
     }
+
 
     /**
      * Получение текущих аккаунтов пользователя
@@ -415,16 +420,18 @@ class TIClient
     }
 
     /**
+     * Создание лимитной заявки
      *
      * @param string $figi
-     * @param integer $lots
+     * @param int $lots
      * @param TIOperationEnum $operation
      * @param double $price
      *
+     * @param null $brokerAccountId
      * @return TIOrder
      * @throws TIException
      */
-    public function sendOrder($figi, $lots, $operation, $price)
+    public function sendOrder($figi, $lots, $operation, $price, $brokerAccountId = null)
     {
         $req_body = json_encode(
             (object)[
@@ -436,27 +443,47 @@ class TIClient
         $response = $this->sendRequest(
             "/orders/limit-order",
             "POST",
-            ["figi" => $figi],
+            [
+                "figi" => $figi,
+                "brokerAccountId" => $brokerAccountId
+            ],
             $req_body
         );
 
-        $commisionValue = (isset($response->getPayload()->commision)) ? $response->getPayload()->commision->value : null;
-        $commisionCurrency = (isset($response->getPayload()->commision)) ? TICurrencyEnum::getCurrency(
-            $response->getPayload()->commision->currency
-        ) : null;
-        $rejectReason = (isset($response->getPayload()->rejectReason)) ? $response->getPayload()->rejectReason : null;
-        return new TIOrder(
-            $response->getPayload()->orderId,
-            TIOperationEnum::getOperation($response->getPayload()->operation),
-            $response->getPayload()->status,
-            $rejectReason,
-            $response->getPayload()->requestedLots,
-            $response->getPayload()->executedLots,
-            $commisionCurrency,
-            $commisionValue,
-            null, // figi
-            null // type
+        return $this->setUpOrder($response, $figi);
+    }
+
+    /**
+     * Создание рыночной заявки
+     *
+     *
+     * @param string $figi
+     * @param int $lots
+     * @param TIOperationEnum $operation
+     *
+     * @param null $brokerAccountId
+     * @return TIOrder
+     * @throws TIException
+     */
+    public function sendMarketOrder($figi, $lots, $operation, $brokerAccountId = null)
+    {
+        $req_body = json_encode(
+            (object)[
+                "lots" => $lots,
+                "operation" => $operation,
+                "price" => $price,
+            ]
         );
+        $response = $this->sendRequest(
+            "/orders/market-order",
+            "POST",
+            [
+                "figi" => $figi,
+                "brokerAccountId" => $brokerAccountId
+            ],
+            $req_body
+        );
+        return $this->setUpOrder($response, $figi);
     }
 
     /**
@@ -883,7 +910,8 @@ class TIClient
                 //TODO: add Exception to logger
             }
             $this->response_now++;
-            if ($this->startGetting === false || ($max_response !== null && $this->response_now >= $max_response) || ($max_time_sec !== null && time() > $this->response_start_time + $max_time_sec)) {
+            if ($this->startGetting === false || ($max_response !== null && $this->response_now >= $max_response) || ($max_time_sec !== null && time(
+                    ) > $this->response_start_time + $max_time_sec)) {
                 break;
             }
         }
@@ -999,6 +1027,35 @@ class TIClient
             }
         }
         return $array;
+    }
+
+    /**
+     * @param TIResponse $response
+     * @param string $figi
+     * @return TIOrder
+     */
+    private function setUpOrder($response, $figi)
+    {
+        $payload = $response->getPayload();
+        $commisionValue = (isset($payload->commision)) ? $payload->commision->value : null;
+        $commisionCurrency = (isset($payload->commision)) ? TICurrencyEnum::getCurrency(
+            $payload->commision->currency
+        ) : null;
+        $rejectReason = (isset($payload->rejectReason)) ? $payload->rejectReason : null;
+
+        return new TIOrder(
+            empty($payload->orderId) ? null : $payload->orderId,
+            TIOperationEnum::getOperation($payload->operation),
+            empty($payload->status) ? null : $payload->status,
+            $rejectReason,
+            empty($payload->requestedLots) ? null : $payload->requestedLots,
+            empty($payload->executedLots) ? null : $payload->executedLots,
+            $commisionCurrency,
+            $commisionValue,
+            $figi,
+            null, // type
+            empty($payload->message) ? null :$payload->message
+        );
     }
 
 }
