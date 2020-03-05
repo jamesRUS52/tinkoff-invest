@@ -652,6 +652,9 @@ class TIClient
         if ($res !== 200 && $res == 401) {
             $error_message = "Authorization error";
             throw new TIException ($error_message, $res);
+        } elseif ( $res == 429){
+            $error_message = "Too Many Requests";
+            throw new TIException ($error_message, $res);
         }
         return new TIResponse($out);
     }
