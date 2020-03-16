@@ -561,16 +561,20 @@ class TIClient
         );
 
         foreach ($response->getPayload()->operations as $operation) {
-            $trades = new TIOperationTrade(
-                empty($operation->trades->tradeId) ? null : $operation->trades->tradeId,
-                empty($operation->trades->date) ? null : $operation->trades->date,
-                empty($operation->trades->price) ? null : $operation->trades->price,
-                empty($operation->trades->quantity) ? null : $operation->trades->quantity
-            );
-            $commissionCurrency = (isset($operation->commision)) ? TICurrencyEnum::getCurrency(
-                $operation->commision->currency
+            $trades = [];
+            foreach ((empty($operation->trades) ? [] : $operation->trades) as $operationTrade)
+            {
+                $trades[] = new TIOperationTrade(
+                    empty($operationTrade->tradeId) ? null : $operationTrade->tradeId,
+                    empty($operationTrade->date) ? null : $operationTrade->date,
+                    empty($operationTrade->price) ? null : $operationTrade->price,
+                    empty($operationTrade->quantity) ? null : $operationTrade->quantity
+                );
+            }
+            $commissionCurrency = (isset($operation->commission)) ? TICurrencyEnum::getCurrency(
+                $operation->commission->currency
             ) : null;
-            $commissionValue = (isset($operation->commision)) ? $operation->commision->value : null;
+            $commissionValue = (isset($operation->commission)) ? $operation->commission->value : null;
             try {
                 $dateTime = new DateTime($operation->date);
             } catch (Exception $e) {
@@ -1038,9 +1042,9 @@ class TIClient
     private function setUpOrder($response, $figi)
     {
         $payload = $response->getPayload();
-        $commisionValue = (isset($payload->commision)) ? $payload->commision->value : null;
-        $commisionCurrency = (isset($payload->commision)) ? TICurrencyEnum::getCurrency(
-            $payload->commision->currency
+        $commisionValue = (isset($payload->commission)) ? $payload->commission->value : null;
+        $commisionCurrency = (isset($payload->commission)) ? TICurrencyEnum::getCurrency(
+            $payload->commission->currency
         ) : null;
         $rejectReason = (isset($payload->rejectReason)) ? $payload->rejectReason : null;
 
