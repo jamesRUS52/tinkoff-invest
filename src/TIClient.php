@@ -649,8 +649,18 @@ class TIClient
 
         curl_close($curl);
 
-        if ($res !== 200 && $res == 401) {
-            $error_message = "Authorization error";
+        if ($res !== 200) {
+            switch ($res) {
+                case 401: 
+                    $error_message = "Authorization error";
+                    break;
+                case 429:  
+                    $error_message = "Too Many Requests";
+                    break;
+                default: 
+                    $error_message = "Unkown error";
+                    break;
+            }
             throw new TIException ($error_message, $res);
         }
         return new TIResponse($out);
