@@ -239,7 +239,8 @@ class TIClient
             $response->getPayload()->instruments[0]->minPriceIncrement,
             $response->getPayload()->instruments[0]->lot,
             $currency,
-            $response->getPayload()->instruments[0]->name
+            $response->getPayload()->instruments[0]->name,
+            $response->getPayload()->instruments[0]->type
         );
     }
 
@@ -269,7 +270,8 @@ class TIClient
             $response->getPayload()->minPriceIncrement,
             $response->getPayload()->lot,
             $currency,
-            $response->getPayload()->name
+            $response->getPayload()->name,
+            $response->getPayload()->type
         );
     }
 
