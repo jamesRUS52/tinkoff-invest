@@ -1028,7 +1028,8 @@ class TIClient
                     $minPriceIncrement,
                     empty($instrument->lot) ? null : $instrument->lot,
                     $currency,
-                    empty($instrument->name) ? null : $instrument->name
+                    empty($instrument->name) ? null : $instrument->name,
+                    empty($instrument->type) ? null : $instrument->type
                 );
                 $array[] = $stock;
             }
