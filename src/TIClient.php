@@ -202,7 +202,8 @@ class TIClient
                     $instrument->minPriceIncrement,
                     $instrument->lot,
                     $currency,
-                    $instrument->name
+                    $instrument->name,
+                    $instrument->type
                 );
                 $currencies[] = $curr;
             }
