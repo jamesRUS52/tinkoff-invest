@@ -18,9 +18,15 @@ abstract class TICurrencyEnum {
     const RUB = "RUB";
     const USD = "USD";
     const EUR = "EUR";
-    
+    const GBP = "GBP";
+    const HKD = "HKD";
+    const CHF = "CHF";
+    const JPY = "JPY";
+    const CNY = "CNY";
+    const TRY = "TRY";
+
     /**
-     * 
+     *
      * @param string $currency
      * @return TICurrencyEnum
      */
@@ -33,6 +39,18 @@ abstract class TICurrencyEnum {
             case "USD" : return TICurrencyEnum::USD;
                 break;
             case "EUR" : return TICurrencyEnum::EUR;
+                break;
+            case "GBP" : return TICurrencyEnum::GBP;
+                break;
+            case "HKD" : return TICurrencyEnum::HKD;
+                break;
+            case "CHF" : return TICurrencyEnum::CHF;
+                break;
+            case "JPY" : return TICurrencyEnum::JPY;
+                break;
+            case "CNY" : return TICurrencyEnum::CNY;
+                break;
+            case "TRY" : return TICurrencyEnum::TRY;
                 break;
             default : return null;
         }
