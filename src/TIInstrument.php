@@ -22,8 +22,9 @@ class TIInstrument {
     private $lot;
     private $currency;
     private $name;
+    private $type;
 
-    function __construct($figi, $ticker, $isin, $minPriceIncrement, $lot, $currency, $name) {
+    function __construct($figi, $ticker, $isin, $minPriceIncrement, $lot, $currency, $name, $type) {
         $this->figi = $figi;
         $this->currency = $currency;
         $this->ticker = $ticker;
@@ -31,8 +32,9 @@ class TIInstrument {
         $this->minPriceIncrement = $minPriceIncrement;
         $this->lot = $lot;
         $this->name = $name;
+        $this->type = $type;
     }
-    
+
     function getFigi() {
         return $this->figi;
     }
@@ -59,6 +61,10 @@ class TIInstrument {
 
     function getName() {
         return $this->name;
+    }
+
+    function getType() {
+        return $this->type;
     }
 
 

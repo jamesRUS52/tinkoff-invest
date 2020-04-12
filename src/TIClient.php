@@ -202,7 +202,8 @@ class TIClient
                     $instrument->minPriceIncrement,
                     $instrument->lot,
                     $currency,
-                    $instrument->name
+                    $instrument->name,
+                    $instrument->type
                 );
                 $currencies[] = $curr;
             }
@@ -239,7 +240,8 @@ class TIClient
             $response->getPayload()->instruments[0]->minPriceIncrement,
             $response->getPayload()->instruments[0]->lot,
             $currency,
-            $response->getPayload()->instruments[0]->name
+            $response->getPayload()->instruments[0]->name,
+            $response->getPayload()->instruments[0]->type
         );
     }
 
@@ -269,7 +271,8 @@ class TIClient
             $response->getPayload()->minPriceIncrement,
             $response->getPayload()->lot,
             $currency,
-            $response->getPayload()->name
+            $response->getPayload()->name,
+            $response->getPayload()->type
         );
     }
 
@@ -1036,7 +1039,8 @@ class TIClient
                     $minPriceIncrement,
                     empty($instrument->lot) ? null : $instrument->lot,
                     $currency,
-                    empty($instrument->name) ? null : $instrument->name
+                    empty($instrument->name) ? null : $instrument->name,
+                    empty($instrument->type) ? null : $instrument->type
                 );
                 $array[] = $stock;
             }
