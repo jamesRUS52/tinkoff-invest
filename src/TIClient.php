@@ -818,14 +818,15 @@ class TIClient
         if ($depth > 20) {
             $depth = 20;
         }
-        $this->orderbookSubscribtion($figi, $depth);
-        $response = $this->wsClient->receive();
-        $this->orderbookSubscribtion($figi, $depth, "unsubscribe");
-        $json = json_decode($response);
-        if (empty($json)) {
-            throw new TIException('Got empty response for OrderBook');
-        }
-        return $this->setUpOrderBook($json->payload);
+
+        $response = $this->sendRequest("/market/orderbook",
+        "GET",
+                [
+                    "figi" => $figi,
+                    "depth" => $depth
+                ]);
+
+        return $this->setUpOrderBook($response->getPayload());
     }
 
     /**
