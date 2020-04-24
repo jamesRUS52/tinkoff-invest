@@ -700,26 +700,7 @@ class TIClient
 
         curl_close($curl);
 
-        if ($res !== 200) {
-            switch ($res) {
-                case 401: 
-                    $error_message = "Authorization error";
-                    break;
-                case 429:  
-                    $error_message = "Too Many Requests";
-                    break;
-                default:
-                    try {
-                        $json_out = json_decode($out);
-                        $error_message = (isset($json_out->payload->message)) ? $json_out->payload->message.' ['.$json_out->payload->code.']' : "Unkown error";
-                    } catch (\Exception $e) {
-                        $error_message = "Unknown error";
-                    }
-                    break;
-            }
-            throw new TIException ($error_message, $res);
-        }
-        return new TIResponse($out);
+        return new TIResponse($out, $res);
     }
 
     /**
