@@ -8,6 +8,7 @@
 
 namespace jamesRUS52\TinkoffInvest\Tests;
 
+use jamesRUS52\TinkoffInvest\TIAccount;
 use \PHPUnit\Framework\TestCase;
 use jamesRUS52\TinkoffInvest\TIClient;
 use jamesRUS52\TinkoffInvest\TISiteEnum;
@@ -43,8 +44,8 @@ class TIClientTest extends TestCase {
     
     public function testsbRegister()
     {
-        $status = $this->fixture->sbRegister();
-        $this->assertEquals("Ok", $status);
+        $account = $this->fixture->sbRegister();
+        $this->assertInstanceOf(TIAccount::class, $account);
     }
     
     public function testsbClear()
