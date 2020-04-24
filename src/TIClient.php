@@ -83,13 +83,15 @@ class TIClient
     /**
      * Регистрация клиента в sandbox
      *
-     * @return string status
+     * @return TIAccount
      * @throws TIException
      */
     public function sbRegister()
     {
         $response = $this->sendRequest("/sandbox/register", "POST");
-        return $response->getStatus();
+        return new TIAccount($response->getPayload()->brokerAccountType,
+                            $response->getPayload()->brokerAccountId);
+
     }
 
     /**
