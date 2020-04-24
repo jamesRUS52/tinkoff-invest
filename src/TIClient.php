@@ -546,9 +546,11 @@ class TIClient
         $response = $this->sendRequest(
             "/orders/cancel",
             "POST",
-            ["orderId" => $orderId]
+            [
+                "orderId" => $orderId,
+                "brokerAccountId" => $this->brokerAccountId
+            ]
         );
-        //var_dump($response);
 
         return $response->getStatus();
     }
