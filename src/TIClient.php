@@ -354,25 +354,25 @@ class TIClient
      * default interval 15 min
      *
      * @param string $figi
-     * @param string $from
-     * @param string $to
+     * @param \DateTime $from
+     * @param \DateTime $to
      * @param string $interval
      * @return TICandle[]
      * @throws TIException
      */
-    public function getHistoryCandles($figi, $from, $to, $interval)
+    public function getHistoryCandles($figi, $from = null, $to = null, $interval = null)
     {
         $fromDate = new DateTime();
-        $fromDate->add(new DateInterval('P7D'));
+        $fromDate->sub(new DateInterval('P7D'));
         $toDate = new DateTime();
 
         $response = $this->sendRequest(
             "/market/candles",
             "GET",
             [
-                'figi' => empty($figi) ? 'AAPL' : $figi,
-                'from' => empty($from) ? $fromDate->format('c') : $from,
-                'to' => empty($to) ? $toDate->format('c') : $to,
+                'figi' => $figi,
+                'from' => empty($from) ? $fromDate->format('c') : $from->format('c'),
+                'to' => empty($to) ? $toDate->format('c') : $to->format('c'),
                 'interval' => empty($interval) ? TIIntervalEnum::MIN15 : $interval
             ]
         );
