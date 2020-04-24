@@ -11,7 +11,7 @@ add to your compose.json
 ```json
 {
     "require": {
-        "james.rus52/tinkoffinvest": "^0.*"
+        "james.rus52/tinkoffinvest": "^1.*"
     }
 }
 ```
@@ -92,12 +92,15 @@ $instr = $client->getInstrumentByFigi("BBG000BR37X2");
 
 Get history OrderBook
 ```php
-$book = $client->getHistoryOrderBook("BBG000BR37X2", $depth = 1); 
+$book = $client->getHistoryOrderBook("BBG000BR37X2", 1); 
 ```
 
 Get historical Candles
 ```php
-$candles = $client->getHistoryCandles("BBG000BR37X2", "2019-08-19T18:38:33.131642+03:00", "2019-08-29T18:38:33.131642+03:00", TIIntervalEnum::MIN15);
+$from = new \DateTime();
+$from->sub(new \DateInterval("P7D"));
+$to = new \DateTime();
+$candles = $client->getHistoryCandles("BBG000BR37X2", $from, $to, TIIntervalEnum::MIN15);
 ```
 
 Get accounts
@@ -135,9 +138,10 @@ $client->cancelOrder($order->getOrderId());
 ```
 List of operations from 10 days ago to 30 days period
 ```php
-$dateFrom = new \DateTime();
-$dateFrom->sub(new \DateInterval("P10D"));
-$operations = $client->getOperations(new \DateTime(), TIIntervalEnum::DAY30);
+$from = new \DateTime();
+$from->sub(new \DateInterval("P7D"));
+$to = new \DateTime();
+$operations = $client->getOperations($from, $to);
 foreach ($operations as $operation)
   print $operation->getId ().' '.$operation->getFigi (). ' '.$operation->getPrice ().' '.$operation->getOperationType().' '.$operation->getDate()->format('d.m.Y H:i')."\n";
 
