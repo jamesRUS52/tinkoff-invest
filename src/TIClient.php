@@ -476,7 +476,7 @@ class TIClient
      * @return TIOrder
      * @throws TIException
      */
-    public function sendOrder($figi, $lots, $operation, $price)
+    public function sendOrder($figi, $lots, $operation, $price = null)
     {
         $req_body = json_encode(
             (object)[
@@ -485,8 +485,11 @@ class TIClient
                 "price" => $price,
             ]
         );
+
+        $order_type = empty($price) ? "market-order" : "limit-order";
+
         $response = $this->sendRequest(
-            "/orders/limit-order",
+            "/orders/" . $order_type,
             "POST",
             [
                 "figi" => $figi,
