@@ -54,18 +54,39 @@ class TIClient
      */
     private $response_start_time;
 
+    private $brokerAccountId = null;
+
     /**
      *
      * @param string $token token from tinkoff.ru for specific site
      * @param TISiteEnum $site site name (sandbox or real exchange)
+     * @param null $account
      * @throws TIException
      */
-    function __construct($token, $site)
+    function __construct($token, $site, $account = null)
     {
         $this->token = $token;
         $this->url = $site;
+        $this->brokerAccountId = $account;
         $this->wsConnect();
     }
+
+    /**
+     * @return null
+     */
+    public function getBrokerAccount()
+    {
+        return $this->brokerAccountId;
+    }
+
+    /**
+     * @param null $brokerAccountId
+     */
+    public function setBrokerAccount($account)
+    {
+        $this->brokerAccountId = $account;
+    }
+
 
 
     /**
@@ -75,9 +96,9 @@ class TIClient
      * @return string status
      * @throws TIException
      */
-    public function sbClear($accountId = null)
+    public function sbClear()
     {
-        $request_params = !empty($accountId) ? ["brokerAccountId" => $accountId] : [];
+        $request_params = !empty($this->brokerAccountId) ? ["brokerAccountId" => $this->brokerAccountId] : [];
         $response = $this->sendRequest("/sandbox/clear",
             "POST",
             $request_params);
@@ -89,9 +110,9 @@ class TIClient
      * @return string
      * @throws TIException
      */
-    public function sbRemove($accountId = null)
+    public function sbRemove()
     {
-        $request_params = !empty($accountId) ? ["brokerAccountId" => $accountId] : [];
+        $request_params = !empty($this->brokerAccountId) ? ["brokerAccountId" => $this->brokerAccountId] : [];
         $response = $this->sendRequest("/sandbox/remove",
             "POST",
             $request_params);
@@ -124,7 +145,7 @@ class TIClient
     public function sbPositionBalance($balance, $figi, $accountId = null)
     {
         $request = ["figi" => $figi, "balance" => $balance];
-        $request_params = !empty($accountId) ? ["brokerAccountId" => $accountId] : [];
+        $request_params = !empty($this->brokerAccountId) ? ["brokerAccountId" => $this->brokerAccountId] : [];
         $request_body = json_encode($request, JSON_NUMERIC_CHECK);
         $response = $this->sendRequest(
             "/sandbox/positions/balance",
@@ -148,8 +169,8 @@ class TIClient
     public function sbCurrencyBalance($balance, $currency = TICurrencyEnum::RUB, $accountId = null)
     {
         $request = ["currency" => $currency, "balance" => $balance];
+        $request_params = !empty($this->brokerAccountId) ? ["brokerAccountId" => $this->brokerAccountId] : [];
         $request_body = json_encode($request, JSON_NUMERIC_CHECK);
-        $request_params = !empty($accountId) ? ["brokerAccountId" => $accountId] : [];
         $response = $this->sendRequest(
             "/sandbox/currencies/balance",
             "POST",
