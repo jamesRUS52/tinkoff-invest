@@ -23,7 +23,7 @@ abstract class TICurrencyEnum {
     const CHF = "CHF";
     const JPY = "JPY";
     const CNY = "CNY";
-    const TRY = "TRY";
+    const TRL = "TRY";
 
     /**
      *
@@ -50,7 +50,7 @@ abstract class TICurrencyEnum {
                 break;
             case "CNY" : return TICurrencyEnum::CNY;
                 break;
-            case "TRY" : return TICurrencyEnum::TRY;
+            case "TRY" : return TICurrencyEnum::TRL;
                 break;
             default : return null;
         }
