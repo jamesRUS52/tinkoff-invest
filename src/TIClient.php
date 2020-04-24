@@ -103,14 +103,15 @@ class TIClient
      * @return string status
      * @throws TIException
      */
-    public function sbPositionBalance($balance, $figi)
+    public function sbPositionBalance($balance, $figi, $accountId = null)
     {
         $request = ["figi" => $figi, "balance" => $balance];
+        $request_params = !empty($accountId) ? ["brokerAccountId" => $accountId] : [];
         $request_body = json_encode($request, JSON_NUMERIC_CHECK);
         $response = $this->sendRequest(
             "/sandbox/positions/balance",
             "POST",
-            [],
+            $request_params,
             $request_body
         );
         return $response->getStatus();
