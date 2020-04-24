@@ -98,10 +98,10 @@ class TIClient
      */
     public function sbClear()
     {
-        $request_params = !empty($this->brokerAccountId) ? ["brokerAccountId" => $this->brokerAccountId] : [];
         $response = $this->sendRequest("/sandbox/clear",
             "POST",
-            $request_params);
+            ["brokerAccountId" => $this->brokerAccountId]
+        );
         return $response->getStatus();
     }
 
@@ -112,10 +112,10 @@ class TIClient
      */
     public function sbRemove()
     {
-        $request_params = !empty($this->brokerAccountId) ? ["brokerAccountId" => $this->brokerAccountId] : [];
         $response = $this->sendRequest("/sandbox/remove",
             "POST",
-            $request_params);
+            ["brokerAccountId" => $this->brokerAccountId]
+        );
         return $response->getStatus();
     }
 
@@ -142,15 +142,14 @@ class TIClient
      * @return string status
      * @throws TIException
      */
-    public function sbPositionBalance($balance, $figi, $accountId = null)
+    public function sbPositionBalance($balance, $figi)
     {
         $request = ["figi" => $figi, "balance" => $balance];
-        $request_params = !empty($this->brokerAccountId) ? ["brokerAccountId" => $this->brokerAccountId] : [];
         $request_body = json_encode($request, JSON_NUMERIC_CHECK);
         $response = $this->sendRequest(
             "/sandbox/positions/balance",
             "POST",
-            $request_params,
+            ["brokerAccountId" => $this->brokerAccountId],
             $request_body
         );
         return $response->getStatus();
@@ -166,15 +165,14 @@ class TIClient
      * @return string status
      * @throws TIException
      */
-    public function sbCurrencyBalance($balance, $currency = TICurrencyEnum::RUB, $accountId = null)
+    public function sbCurrencyBalance($balance, $currency = TICurrencyEnum::RUB)
     {
         $request = ["currency" => $currency, "balance" => $balance];
-        $request_params = !empty($this->brokerAccountId) ? ["brokerAccountId" => $this->brokerAccountId] : [];
         $request_body = json_encode($request, JSON_NUMERIC_CHECK);
         $response = $this->sendRequest(
             "/sandbox/currencies/balance",
             "POST",
-            $request_params,
+            ["brokerAccountId" => $this->brokerAccountId],
             $request_body
         );
         return $response->getStatus();
@@ -475,11 +473,10 @@ class TIClient
      * @param TIOperationEnum $operation
      * @param double $price
      *
-     * @param null $brokerAccountId
      * @return TIOrder
      * @throws TIException
      */
-    public function sendOrder($figi, $lots, $operation, $price, $brokerAccountId = null)
+    public function sendOrder($figi, $lots, $operation, $price)
     {
         $req_body = json_encode(
             (object)[
@@ -493,7 +490,7 @@ class TIClient
             "POST",
             [
                 "figi" => $figi,
-                "brokerAccountId" => $brokerAccountId
+                "brokerAccountId" => $this->brokerAccountId
             ],
             $req_body
         );
@@ -1086,8 +1083,8 @@ class TIClient
     private function setUpOrder($response, $figi)
     {
         $payload = $response->getPayload();
-        $commisionValue = (isset($payload->commission)) ? $payload->commission->value : null;
-        $commisionCurrency = (isset($payload->commission)) ? TICurrencyEnum::getCurrency(
+        $commissionValue = (isset($payload->commission)) ? $payload->commission->value : null;
+        $commissionCurrency = (isset($payload->commission)) ? TICurrencyEnum::getCurrency(
             $payload->commission->currency
         ) : null;
         $rejectReason = (isset($payload->rejectReason)) ? $payload->rejectReason : null;
@@ -1099,8 +1096,7 @@ class TIClient
             $rejectReason,
             empty($payload->requestedLots) ? null : $payload->requestedLots,
             empty($payload->executedLots) ? null : $payload->executedLots,
-            $commisionCurrency,
-            $commisionValue,
+            new TICommission($commissionCurrency, $commissionValue),
             $figi,
             null, // type
             empty($payload->message) ? null :$payload->message
