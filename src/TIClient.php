@@ -407,18 +407,16 @@ class TIClient
     /**
      * Получить портфель клиента
      *
-     * @param TIAccount|null $account
-     *
      * @return TIPortfolio
      * @throws TIException
      */
-    public function getPortfolio(TIAccount $account = null)
+    public function getPortfolio()
     {
         $currs = [];
-        $params = [];
-        if ($account) {
-            $params = ['brokerAccountId' => $account->getBrokerAccountId()];
-        }
+        $params = [
+                    'brokerAccountId' => $this->brokerAccountId
+                    ];
+
         $response = $this->sendRequest(
             "/portfolio/currencies",
             "GET",
@@ -427,10 +425,12 @@ class TIClient
 
         foreach ($response->getPayload()->currencies as $currency) {
             $ticurrency = TICurrencyEnum::getCurrency($currency->currency);
+            $blocked = (isset($currency->blocked)) ? $currency->blocked : 0;
 
             $curr = new TIPortfolioCurrency(
                 $currency->balance,
-                $ticurrency
+                $ticurrency,
+                $blocked
             );
             $currs[] = $curr;
         }
@@ -449,15 +449,23 @@ class TIClient
             }
 
             $isin = (isset($position->isin)) ? $position->isin : null;
+            $blocked = (isset($position->blocked)) ? $position->blocked : 0;
+            $averagePositionPrice = (isset($position->averagePositionPrice)) ? $position->averagePositionPrice : null;
+            $averagePositionPriceNoNkd = (isset($position->averagePositionPriceNoNkd)) ? $position->averagePositionPriceNoNkd : null;
+
             $instr = new TIPortfolioInstrument(
                 $position->figi,
                 $position->ticker,
                 $isin,
                 $position->instrumentType,
                 $position->balance,
+                $blocked,
                 $position->lots,
                 $expectedYeildValue,
-                $expectedYeildCurrency
+                $expectedYeildCurrency,
+                $position->name,
+                $averagePositionPrice,
+                $averagePositionPriceNoNkd
             );
             $instrs[] = $instr;
         }

@@ -17,12 +17,12 @@ class TIPortfolio {
     //put your code here
     /**
      *
-     * @var TIPortfolioCurrency 
+     * @var TIPortfolioCurrency[]
      */
     private $currencies;
     /**
      *
-     * @var TIPortfolioInstrument
+     * @var TIPortfolioInstrument[]
      */
     private $instruments;
     
@@ -63,16 +63,16 @@ class TIPortfolio {
     
     /**
      * Get all currencies in portfolio
-     * @return array of \TIPortfolioCurrency
+     * @return TIPortfolioCurrency[]
      */
     public function getAllCurrencies()
     {
         return $this->currencies;
     }
-    
+
     /**
      * Get all instruments in portfolio
-     * @return array of \TIPortfolioInstrument
+     * @return TIPortfolioInstrument[]
      */
     public function getAllinstruments()
     {

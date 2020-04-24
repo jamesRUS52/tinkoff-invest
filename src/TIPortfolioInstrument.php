@@ -23,16 +23,24 @@ class TIPortfolioInstrument {
     private $lots;
     private $expectedYieldValue;
     private $expectedYieldCurrency;
+    private $blocked;
+    private $name;
+    private $averagePositionPrice;
+    private $averagePositionPriceNoNkd;
     
-    function __construct($figi, $ticker, $isin, $instrumentType, $balance, $lots, $expectedYieldValue,$expectedYieldCurrency) {
+    function __construct($figi, $ticker, $isin, $instrumentType, $balance, $blocked, $lots, $expectedYieldValue,$expectedYieldCurrency, $name, $averagePositionPrice, $averagePositionPriceNoNkd) {
         $this->figi = $figi;
         $this->ticker = $ticker;
         $this->isin = $isin;
         $this->instrumentType = $instrumentType;
         $this->balance = $balance;
+        $this->blocked = $blocked;
         $this->lots = $lots;
         $this->expectedYieldValue = $expectedYieldValue;
         $this->expectedYieldCurrency = $expectedYieldCurrency;
+        $this->name = $name;
+        $this->averagePositionPrice = $averagePositionPrice;
+        $this->averagePositionPriceNoNkd = $averagePositionPriceNoNkd;
     }
 
     function getFigi() {
@@ -55,6 +63,14 @@ class TIPortfolioInstrument {
         return $this->balance;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getBlocked()
+    {
+        return $this->blocked;
+    }
+
     function getLots() {
         return $this->lots;
     }
@@ -65,6 +81,30 @@ class TIPortfolioInstrument {
     
     function getExpectedYieldCurrency() {
         return $this->expectedYieldCurrency;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAveragePositionPrice()
+    {
+        return $this->averagePositionPrice;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAveragePositionPriceNoNkd()
+    {
+        return $this->averagePositionPriceNoNkd;
     }
 
 

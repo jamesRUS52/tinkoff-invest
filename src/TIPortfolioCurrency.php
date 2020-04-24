@@ -17,10 +17,12 @@ class TIPortfolioCurrency {
     //put your code here
     private $balance;
     private $currency;
+    private $blocked;
                 
-    function __construct($balance, $currency) {
+    function __construct($balance, $currency, $blocked) {
         $this->balance = $balance;
         $this->currency = $currency;
+        $this->blocked = $blocked;
     }
     
     function getBalance() {
@@ -30,6 +32,15 @@ class TIPortfolioCurrency {
     function getCurrency() {
         return $this->currency;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getBlocked()
+    {
+        return $this->blocked;
+    }
+
 
 
 }
