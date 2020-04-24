@@ -598,12 +598,10 @@ class TIClient
      * @param DateTime $fromDate
      * @param DateTime $toDate
      * @param string $figi
-     * @param TIAccount|null $account
-     *
      * @return TIOperation[]
      * @throws TIException
      */
-    public function getOperations($fromDate, $toDate, $figi = null, $account = null)
+    public function getOperations($fromDate, $toDate, $figi = null)
     {
         $operations = [];
         $response = $this->sendRequest(
@@ -613,7 +611,7 @@ class TIClient
                 "from" => $fromDate->format("c"),
                 "to" => $toDate->format("c"),
                 "figi" => $figi,
-                "brokerAccountId" => $account ? $account->getBrokerAccountId() : $account,
+                "brokerAccountId" => $this->brokerAccountId,
             ]
         );
 
