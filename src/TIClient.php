@@ -122,17 +122,19 @@ class TIClient
      * @param double $balance
      * @param string $currency
      *
+     * @param null $accountId
      * @return string status
      * @throws TIException
      */
-    public function sbCurrencyBalance($balance, $currency = TICurrencyEnum::RUB)
+    public function sbCurrencyBalance($balance, $currency = TICurrencyEnum::RUB, $accountId = null)
     {
         $request = ["currency" => $currency, "balance" => $balance];
         $request_body = json_encode($request, JSON_NUMERIC_CHECK);
+        $request_params = !empty($accountId) ? ["brokerAccountId" => $accountId] : [];
         $response = $this->sendRequest(
             "/sandbox/currencies/balance",
             "POST",
-            [],
+            $request_params,
             $request_body
         );
         return $response->getStatus();
@@ -666,8 +668,13 @@ class TIClient
                 case 429:  
                     $error_message = "Too Many Requests";
                     break;
-                default: 
-                    $error_message = "Unkown error";
+                default:
+                    try {
+                        $json_out = json_decode($out);
+                        $error_message = (isset($json_out->payload->message)) ? $json_out->payload->message.' ['.$json_out->payload->code.']' : "Unkown error";
+                    } catch (\Exception $e) {
+                        $error_message = "Unknown error";
+                    }
                     break;
             }
             throw new TIException ($error_message, $res);
