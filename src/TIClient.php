@@ -71,6 +71,7 @@ class TIClient
     /**
      * Удаление всех позиций в песочнице
      *
+     * @param null $accountId
      * @return string status
      * @throws TIException
      */
@@ -78,6 +79,20 @@ class TIClient
     {
         $request_params = !empty($accountId) ? ["brokerAccountId" => $accountId] : [];
         $response = $this->sendRequest("/sandbox/clear",
+            "POST",
+            $request_params);
+        return $response->getStatus();
+    }
+
+    /** Remove sandbox Account
+     * @param null $accountId
+     * @return string
+     * @throws TIException
+     */
+    public function sbRemove($accountId = null)
+    {
+        $request_params = !empty($accountId) ? ["brokerAccountId" => $accountId] : [];
+        $response = $this->sendRequest("/sandbox/remove",
             "POST",
             $request_params);
         return $response->getStatus();

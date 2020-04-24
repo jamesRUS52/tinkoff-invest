@@ -55,6 +55,10 @@ Client register on sandbox (sandbox only)
 ```php
 $client->sbRegister();
 ```
+Client remove account on sandbox (sandbox only)
+```php
+$client->sbRemove();
+```
 Put stocks to your sandbox account (sandbox only)
 ```php
 $client->sbPositionBalance(10.4,"BBG000BR37X2");
