@@ -74,9 +74,12 @@ class TIClient
      * @return string status
      * @throws TIException
      */
-    public function sbClear()
+    public function sbClear($accountId = null)
     {
-        $response = $this->sendRequest("/sandbox/clear", "POST");
+        $request_params = !empty($accountId) ? ["brokerAccountId" => $accountId] : [];
+        $response = $this->sendRequest("/sandbox/clear",
+            "POST",
+            $request_params);
         return $response->getStatus();
     }
 
