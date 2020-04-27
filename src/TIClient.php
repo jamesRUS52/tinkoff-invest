@@ -513,38 +513,6 @@ class TIClient
     }
 
     /**
-     * Создание рыночной заявки
-     *
-     *
-     * @param string $figi
-     * @param int $lots
-     * @param TIOperationEnum $operation
-     *
-     * @param null $brokerAccountId
-     * @return TIOrder
-     * @throws TIException
-     */
-    public function sendMarketOrder($figi, $lots, $operation, $brokerAccountId = null)
-    {
-        $req_body = json_encode(
-            (object)[
-                "lots" => $lots,
-                "operation" => $operation,
-            ]
-        );
-        $response = $this->sendRequest(
-            "/orders/market-order",
-            "POST",
-            [
-                "figi" => $figi,
-                "brokerAccountId" => $brokerAccountId
-            ],
-            $req_body
-        );
-        return $this->setUpOrder($response, $figi);
-    }
-
-    /**
      * Отменить заявку
      *
      * @param string $orderId Номер заявки
