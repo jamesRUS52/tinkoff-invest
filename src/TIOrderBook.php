@@ -94,22 +94,22 @@ class TIOrderBook
 
     function getBestPriceToBuy()
     {
-        return (count($this->asks) > 0) ? $this->asks[0][0] : null;
+        return (count($this->asks) > 0) ? $this->asks[0]->price : null;
     }
 
     function getBestPriceToBuyLotCount()
     {
-        return $this->asks[0][1];
+        return (count($this->asks) > 0) ? $this->asks[0]->quantity : null;
     }
 
     function getBestPriceToSell()
     {
-        return $this->bids[0][0];
+        return (count($this->bids) > 0) ?  $this->bids[0]->price : null;
     }
 
     function getBestPriceToSellLotCount()
     {
-        return $this->asks[1][1];
+        return (count($this->bids) > 0) ?  $this->bids[0]->quantity : null;
     }
 
     /**
