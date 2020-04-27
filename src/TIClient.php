@@ -270,6 +270,9 @@ class TIClient
             ["ticker" => $ticker]
         );
 
+        if ($response->getPayload()->total == 0)
+            throw new TIException("Cannot find instrument by ticker {$ticker}");
+
         $currency = TICurrencyEnum::getCurrency(
             $response->getPayload()->instruments[0]->currency
         );
