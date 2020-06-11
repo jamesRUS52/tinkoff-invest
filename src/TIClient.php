@@ -553,7 +553,6 @@ class TIClient
                     $order->requestedLots,
                     $order->executedLots,
                     null, // comm currency
-                    null, // comm value
                     $order->figi,
                     $order->type,
                     ''
