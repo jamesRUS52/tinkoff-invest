@@ -26,8 +26,9 @@ class TIOrder {
     private $figi;
     private $type;
     private $message;
+    private $price;
             
-    function __construct($orderId, $operation, $status, $rejectReason, $requestedLots, $executedLots, $commission, $figi, $type,$message) {
+    function __construct($orderId, $operation, $status, $rejectReason, $requestedLots, $executedLots, $commission, $figi, $type, $message, $price) {
         $this->orderId = $orderId;
         $this->operation = $operation;
         $this->status = $status;
@@ -38,6 +39,7 @@ class TIOrder {
         $this->figi = $figi;
         $this->type = $type;
         $this->message = $message;
+        $this->price = $price;
     }
 
     function getOrderId() {
@@ -83,4 +85,7 @@ class TIOrder {
         return $this->message;
     }
 
+    function getPrice() {
+        return $this->price;
+    }
 }
