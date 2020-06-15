@@ -553,10 +553,10 @@ class TIClient
                     $order->requestedLots,
                     $order->executedLots,
                     null, // comm currency
-                    null, // comm value
                     $order->figi,
                     $order->type,
-                    ''
+                    '',
+                    $order->price,
                 );
                 $orders[] = $ord;
             }
@@ -1081,7 +1081,8 @@ class TIClient
             new TICommission($commissionCurrency, $commissionValue),
             $figi,
             null, // type
-            empty($payload->message) ? null :$payload->message
+            empty($payload->message) ? null : $payload->message,
+            empty($payload->price) ? null : $payload->price,
         );
     }
 
