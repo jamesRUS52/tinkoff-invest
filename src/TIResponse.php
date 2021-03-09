@@ -61,7 +61,7 @@ class TIResponse
                     $error_message = "Too Many Requests";
                     break;
                 default:
-                    $error_message = "Unknown error";
+                    $error_message = "Unknown error: ".$e->getMessage()."; Http code: ".$curlStatusCode."; Code: ".$e->getCode();
                     break;
             }
             throw new TIException($error_message);
