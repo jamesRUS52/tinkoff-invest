@@ -708,10 +708,11 @@ class TIClient
         $out = curl_exec($curl);
         $res = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
+        $error = curl_error($curl);
         curl_close($curl);
 
         if ($res === 0) {
-            throw new \Exception(curl_error($curl));
+            throw new \Exception($error);
         }
 
         return new TIResponse($out, $res);
