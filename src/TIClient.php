@@ -56,6 +56,10 @@ class TIClient
 
     private $brokerAccountId = null;
 
+    private $debug = false;
+
+    private $ignore_ssl_peer_verification = false;
+
     /**
      *
      * @param string $token token from tinkoff.ru for specific site
@@ -629,6 +633,24 @@ class TIClient
     }
 
     /**
+     * @param bool $debug
+     */
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
+    }
+
+    /**
+     * @param bool $ignore_ssl_peer_verification
+     */
+    public function setIgnoreSslPeerVerification($ignore_ssl_peer_verification)
+    {
+        $this->ignore_ssl_peer_verification = $ignore_ssl_peer_verification;
+    }
+
+
+
+    /**
      * Отправка запроса на API
      *
      * @param string $action
@@ -674,10 +696,23 @@ class TIClient
             ]
         );
 
+        if ($this->debug) {
+            curl_setopt($curl, CURLOPT_VERBOSE, true);
+            curl_setopt($curl, CURLOPT_CERTINFO, true);
+        }
+
+        if ($this->ignore_ssl_peer_verification) {
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        }
+
         $out = curl_exec($curl);
         $res = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
         curl_close($curl);
+
+        if ($res === 0) {
+            throw new \Exception(curl_error($curl));
+        }
 
         return new TIResponse($out, $res);
     }

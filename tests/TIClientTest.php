@@ -31,12 +31,14 @@ class TIClientTest extends TestCase {
      */
     protected $fixture;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->fixture = new TIClient("t.YhKXlD1uriHNqafx5xw9i_fBoP_NVwh2r2l0h5CVPgVqpvO0WVCn5OvbcRnPg2kQH7kO67rh8dHZju32QsFxTw",TISiteEnum::SANDBOX);
+        $this->fixture = new TIClient("t.RJiVzRcOKf5h0eUJBDsy9aggjgX3FGU82O-4j_Cu2qpM-_yPYwjJMsBDQWObCagCKFNwCvFl-iDlFtBK9KwK_w",TISiteEnum::SANDBOX);
+//        $this->fixture->setDebug(true);
+//        $this->fixture->setIgnoreSslPeerVerification(true);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->fixture = null;
     }
