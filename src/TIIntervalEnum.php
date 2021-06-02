@@ -23,6 +23,8 @@ abstract class TIIntervalEnum {
     const MIN15 = '15min';
     const MIN30 = '30min';
     const HOUR = 'hour';
+    const HOUR2 = "2hour";
+    const HOUR4 = "4hour";
     const DAY = 'day';
     const WEEK = 'week';
     const MONTH = 'month';
