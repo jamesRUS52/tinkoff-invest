@@ -560,7 +560,7 @@ class TIClient
                     $order->figi,
                     $order->type,
                     '',
-                    $order->price,
+                    $order->price
                 );
                 $orders[] = $ord;
             }
@@ -1118,7 +1118,7 @@ class TIClient
             $figi,
             null, // type
             empty($payload->message) ? null : $payload->message,
-            empty($payload->price) ? null : $payload->price,
+            empty($payload->price) ? null : $payload->price
         );
     }
 
