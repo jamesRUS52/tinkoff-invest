@@ -35,7 +35,7 @@ class TIClientTest extends TestCase {
     {
         $this->fixture = new TIClient("t.RJiVzRcOKf5h0eUJBDsy9aggjgX3FGU82O-4j_Cu2qpM-_yPYwjJMsBDQWObCagCKFNwCvFl-iDlFtBK9KwK_w",TISiteEnum::SANDBOX);
 //        $this->fixture->setDebug(true);
-//        $this->fixture->setIgnoreSslPeerVerification(true);
+        $this->fixture->setIgnoreSslPeerVerification(true);
     }
 
     protected function tearDown(): void
@@ -154,6 +154,13 @@ class TIClientTest extends TestCase {
         $operations = $this->fixture->getOperations($from, $to,'BBG004RVFCY3');
         $this->assertGreaterThan(1, $operations);
 
+    }
+
+    public function testgetBestPriceToBuy()
+    {
+        $ordBook = $this->fixture->getHistoryOrderBook("BBG004RVFCY3");
+        $this->assertIsNumeric($ordBook->getBestPriceToBuy());
+        $this->assertIsInt($ordBook->getBestPriceToBuyLotCount());
     }
 
     public function testgetAccounts()
