@@ -830,6 +830,22 @@ class TIClient
         if (empty($json)) {
             throw new TIException('Got empty response for OrderBook');
         }
+        if (isset($json->payload->bids) && is_array($json->payload->bids)) {
+            foreach ($json->payload->bids as &$bid) {
+                $bid = (object)[
+                    'price'    => $bid[0],
+                    'quantity' => $bid[1]
+                ];
+            }
+        }
+        if (isset($json->payload->asks) && is_array($json->payload->asks)) {
+            foreach ($json->payload->asks as &$ask) {
+                $ask = (object)[
+                    'price'    => $ask[0],
+                    'quantity' => $ask[1]
+                ];
+            }
+        }
         return $this->setUpOrderBook($json->payload);
     }
 
