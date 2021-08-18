@@ -34,12 +34,12 @@ class TIClientTest extends TestCase {
     protected function setUp(): void
     {
         $this->fixture = new TIClient("t.RJiVzRcOKf5h0eUJBDsy9aggjgX3FGU82O-4j_Cu2qpM-_yPYwjJMsBDQWObCagCKFNwCvFl-iDlFtBK9KwK_w",TISiteEnum::SANDBOX);
-//        $this->fixture->setDebug(true);
         $this->fixture->setIgnoreSslPeerVerification(true);
     }
 
     protected function tearDown(): void
     {
+        $this->fixture->sbClear();
         $this->fixture = null;
     }
 
@@ -127,6 +127,8 @@ class TIClientTest extends TestCase {
     
     public function testsendOrder()
     {
+        $this->fixture->sbCurrencyBalance(5000000, TICurrencyEnum::RUB);
+        
         $order = $this->fixture->sendOrder("BBG004RVFCY3", 11, TIOperationEnum::BUY, 100);
         $this->assertInstanceOf(TIOrder::class, $order);
         $this->assertEquals("Fill", $order->getStatus());
