@@ -63,7 +63,7 @@ class TIClient
     /**
      *
      * @param string $token token from tinkoff.ru for specific site
-     * @param TISiteEnum $site site name (sandbox or real exchange)
+     * @param string $site site name (sandbox or real exchange), @see TISiteEnum constants
      * @param null $account
      * @throws TIException
      */
@@ -546,7 +546,11 @@ class TIClient
     public function getOrders($orderIds = null)
     {
         $orders = [];
-        $response = $this->sendRequest("/orders", "GET");
+        $response = $this->sendRequest(
+            "/orders",
+            "GET",
+            ["brokerAccountId" => $this->brokerAccountId]
+        );
         foreach ($response->getPayload() as $order) {
             if ($orderIds === null || in_array($order->orderId, $orderIds)) {
                 $ord = new TIOrder(
