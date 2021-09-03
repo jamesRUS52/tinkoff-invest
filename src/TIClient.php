@@ -546,7 +546,11 @@ class TIClient
     public function getOrders($orderIds = null)
     {
         $orders = [];
-        $response = $this->sendRequest("/orders", "GET");
+        $response = $this->sendRequest(
+            "/orders",
+            "GET",
+            ["brokerAccountId" => $this->brokerAccountId]
+        );
         foreach ($response->getPayload() as $order) {
             if ($orderIds === null || in_array($order->orderId, $orderIds)) {
                 $ord = new TIOrder(
