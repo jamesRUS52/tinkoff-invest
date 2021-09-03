@@ -63,7 +63,7 @@ class TIClient
     /**
      *
      * @param string $token token from tinkoff.ru for specific site
-     * @param TISiteEnum $site site name (sandbox or real exchange)
+     * @param string $site site name (sandbox or real exchange), @see TISiteEnum constants
      * @param null $account
      * @throws TIException
      */

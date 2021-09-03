@@ -33,7 +33,7 @@ class TIPortfolio {
     
     /**
      * Get balance of currency
-     * @param TICurrencyEnum $currency
+     * @param string $currency @see TICurrencyEnum constants
      * @return double or false
      */
     public function getCurrencyBalance($currency)
